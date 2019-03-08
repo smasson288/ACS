@@ -1,6 +1,7 @@
 from django.db import models
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
-class School(Models.Model):
+class School(models.Model):
     School_id = models.IntegerField(primary_key=True)
     School_desc = models.CharField(max_length=100)
     School_name = models.CharField(max_length=100)
@@ -12,39 +13,7 @@ class School(Models.Model):
     def ___str___(self):
         return self.School_name
 
-class Program(Models.Model):
-    Program_id = models.IntegerField(primary_key=True)
-    Program_name = models.CharField(max_length=100)
-    College = models.CharField(max_length=100)
-    Degree = models.CharField(max_length=100)
-    School_id = models.ForeignKey(School, on_delete=models.CASCADE)
-    Requirement_id = models.ForeignKey(Requirement, on_delete=models.CASCADE)
-
-    def ___str___(self):
-        return self.Program_name
-
-class Feedback(Models.Model):
-    Feedback_id = models.IntegerField(primary_Key=True)
-    Checklist_id = models.ForeignKey(Checklist, on_delete=CASCADE)
-    STATUS_CHOICES = (
-        ACCEPTED,
-        WAITLISTED,
-        DENIED
-    )
-    Feedback_status = models.CharField(max_length=1, choices=STATUS_CHOICES)
-    GPA = models.IntegerField()
-    Standardized_Test = models.IntegerField()
-    Recommendation = models.CharField(max_length=1000)
-    Research = models.CharField(max_length=1000)
-
-
-class Staff(Models.Model):
-    Staff_id = models.IntegerField(primary_Key=True)
-    Staff_firstname = models.CharField(max_length=100)
-    Staff_lastname = models.CharField(max_length=100)
-    Staff_password = models.CharField(max_length=100)
-
-class Requirement(Models.Model):
+class Requirement(models.Model):
     Requirement_id = models.IntegerField(primary_key=True)
     Program_id = models.ForeignKey(Program, on_delete=models.CASCADE)
     Term_season = models.CharField(mox_length=6)
@@ -55,7 +24,7 @@ class Requirement(Models.Model):
     Statement_of_purpose = models.BooleanField(default=False)
     Personal_statement = models.BooleanField(default=False)
 
-class Checklist(Models.Model):
+class Checklist(models.Model):
     Checklist_id = models.IntegerField(primary_key=True)
     Requirement_id = models.ForeignKey(Requirement,id, on_delete=models.CASCADE)
     Student_id = models.ForeignKey(Student, on_delete=models.CASCADE)
@@ -67,9 +36,62 @@ class Checklist(Models.Model):
     Statement_of_purpose = models.BooleanField(default=False)
     Personal_statement = models.BooleanField(default=False)
 
-class Student(Models.Model):
-    Student_id = models.IntegerField(primary_key=True)
-    Student_firstname = models.CharField(max_length=100)
-    Student_lastname = models.CharField(max_length=100)
-    Student_password = models.CharField(max_length=100)
+class Program(models.Model):
+    Program_id = models.IntegerField(primary_key=True)
+    Program_name = models.CharField(max_length=100)
+    College = models.CharField(max_length=100)
+    Degree = models.CharField(max_length=100)
+    School_id = models.ForeignKey(School, on_delete=models.CASCADE)
+    Requirement_id = models.ForeignKey(Requirement, on_delete=models.CASCADE)
 
+    def ___str___(self):
+        return self.Program_name
+
+class Feedback(models.Model):
+    Feedback_id = models.IntegerField(primary_Key=True)
+    Checklist_id = models.ForeignKey(Checklist, on_delete=models.CASCADE)
+    STATUS_CHOICES = (
+        "ACCEPTED",
+        "WAITLISTED",
+        "DENIED"
+    )
+    Feedback_status = models.CharField(max_length=1, choices=STATUS_CHOICES)
+    GPA = models.IntegerField()
+    Standardized_Test = models.IntegerField()
+    Recommendation = models.CharField(max_length=1000)
+    Research = models.CharField(max_length=1000)
+
+class UserManager(BaseUserManager):
+    def create_user(self, username, first_name, last_name, password):
+        user = self.model(
+            username=username,
+            first_name=first_name,
+            last_name=last_name,
+        )
+
+        user.set_password(password)
+        user.save(using=self.db)
+
+        return user
+
+class Staff(AbstractBaseUser):
+    username = models.IntegerField(primary_Key=True)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    password = models.CharField(max_length=100)
+
+    objects = UserManager()
+
+    USERNAME_FIELD = 'username'
+    REQUIRED_FIELDS = ['username', 'first_name', 'last_name', 'password']
+
+class Student(AbstractBaseUser):
+    username = models.IntegerField(primary_key=True)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    password = models.CharField(max_length=100)
+
+    objects = UserManager()
+
+    USERNAME_FIELD = 'username'
+    REQUIRED_FIELDS = ['username', 'first_name', 'last_name', 'password']

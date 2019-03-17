@@ -15,6 +15,7 @@ class UserManager(BaseUserManager):
 
         return user
 
+
 class Student(AbstractBaseUser):
     username = models.CharField(primary_key=True, max_length=100)
     first_name = models.CharField(max_length=100)
@@ -26,6 +27,7 @@ class Student(AbstractBaseUser):
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['first_name', 'last_name', 'password']
 
+
 class School(models.Model):
     School_id = models.IntegerField(primary_key=True)
     School_desc = models.CharField(max_length=100)
@@ -35,8 +37,10 @@ class School(models.Model):
     Address_state = models.CharField(max_length=100)
     Address_zipcode = models.CharField(max_length=100)
 
+
 class Staff(Student):
     School_id = models.ForeignKey(School, on_delete=models.CASCADE)
+
 
 class Program(models.Model):
     Program_id = models.IntegerField(primary_key=True)
@@ -44,6 +48,7 @@ class Program(models.Model):
     College = models.CharField(max_length=100)
     Degree = models.CharField(max_length=100)
     School_id = models.ForeignKey(School, on_delete=models.CASCADE)
+
 
 class Requirement(models.Model):
     Requirement_id = models.IntegerField(primary_key=True)
@@ -56,6 +61,7 @@ class Requirement(models.Model):
     Statement_of_purpose = models.BooleanField(default=False)
     Personal_statement = models.BooleanField(default=False)
 
+
 class Checklist(models.Model):
     Checklist_id = models.IntegerField(primary_key=True)
     Requirement_id = models.ForeignKey(Requirement, on_delete=models.CASCADE)
@@ -67,6 +73,7 @@ class Checklist(models.Model):
     Tests = models.BooleanField(default=False)
     Statement_of_purpose = models.BooleanField(default=False)
     Personal_statement = models.BooleanField(default=False)
+
 
 class Feedback(models.Model):
     Feedback_id = models.IntegerField(primary_key=True)

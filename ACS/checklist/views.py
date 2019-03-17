@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, HttpResponseRedirect
 from .forms import *
 
 
@@ -7,7 +7,13 @@ def index(request):
 
 
 def login(request):
-    form = SignInForm()
+    if request.method == 'POST':
+        form = SignInForm(request.POST)
+        if form.is_valid():
+            #try to log user in
+            return HttpResponseRedirect('/checklist/')
+    else:
+        form = SignInForm()
     return render(request, 'login.html', {'form': form})
 
 

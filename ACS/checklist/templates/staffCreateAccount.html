@@ -5,6 +5,10 @@
     <title>Title</title>
 </head>
 <body>
-
+    <form action="/staffCreateAccount/" method="post">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="signup">
+    </form>
 </body>
 </html>

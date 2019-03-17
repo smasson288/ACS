@@ -18,7 +18,14 @@ def login(request):
 
 
 def studentCreateAccount(request):
-    return render(request, 'studentCreateAccount.html')
+    if request.method == 'POST':
+        form = StudentSignUpForm(request.POST)
+        if form.is_valid():
+            #try to sign user up
+            return HttpResponseRedirect('/login/')
+    else:
+        form = StudentSignUpForm()
+    return render(request, 'studentCreateAccount.html', {'form': form})
 
 
 def staffCreateAccount(request):

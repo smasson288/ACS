@@ -1,8 +1,10 @@
 
 from django.contrib.auth.hashers import check_password
-from checklist.models import Staff,Student
+
+from checklist.models import Staff, Student
 
 class AuthBackend(object):
+
     def authenticate(self, username, password):
         try:
             user = Staff.objects.get(username=username)
@@ -16,7 +18,6 @@ class AuthBackend(object):
                     return user
             except Student.DoesNotExist:
                 return None
-
     def get_user(self, username):
         try:
             user = Staff.objects.get(username=username)

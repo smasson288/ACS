@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'checklist.apps.ChecklistConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -120,5 +121,5 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-AUTH_USER_MODEL = ('checklist.Staff', 'checklist.Student',)
+AUTH_USER_MODEL = 'checklist.Student'
 AUTHENTICATION_BACKENDS = ('checklist.backends.AuthBackend',)

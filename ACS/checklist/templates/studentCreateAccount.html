@@ -7,7 +7,7 @@
 <body>
     <form action="/studentCreateAccount/" method="post">
         {% csrf_token %}
-        {{ form }}
+        {{ form.as_p }}
         <input type="submit" value="signup">
     </form>
 </body>

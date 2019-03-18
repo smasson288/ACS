@@ -37,7 +37,13 @@ def checklist(request):
 
 
 def search(request):
-    return render(request, 'search.html')
+    if request.method == 'POST':
+        form = ProgramSearchForm(request.POST)
+        if form.is_valid():
+            #search program in db
+            return HttpResponseRedirect('/program/')
+    form = ProgramSearchForm()
+    return render(request, 'search.html', {'form': form})
 
 
 def program(request):
@@ -45,8 +51,15 @@ def program(request):
 
 
 def createProgram(request):
-    return render(request, 'createProgram.html')
+    if request.method == 'POST':
+        form = ProgramCreateForm(request.POST)
+        if form.is_valid():
+            #create a new program in db
+            return HttpResponseRedirect('/checklist/')
+    form = ProgramCreateForm()
+    return render(request, 'createProgram.html', {'form': form})
 
 
 def feedback(request):
-    return render(request, 'feedback.html')
+    form = FeedbackForm()
+    return render(request, 'feedback.html', {'form': form})

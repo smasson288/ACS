@@ -5,6 +5,10 @@
     <title>Title</title>
 </head>
 <body>
-
+    <form action="/createProgram/" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Create Program">
+    </form>
 </body>
 </html>

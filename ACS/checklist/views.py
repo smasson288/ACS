@@ -26,11 +26,11 @@ def accLogin(request):
                     user = Student.objects.get(username=username)
                 except ObjectDoesNotExist:
                     messages.warning(request, 'username does not exist')
-                    return render(request, 'login.html')
+                    return render(request, 'login.html', {'form': SignInForm()})
 
             if not check_password(password, user.password):
                 messages.warning(request, 'incorrect password, please try again')
-                return render(request, 'login.html')
+                return render(request, 'login.html', {'form': SignInForm()})
 
             user = AuthBackend.authenticate(request, username=username, password=password)
             if user is not None:

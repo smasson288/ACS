@@ -8,7 +8,7 @@
     {% block content %}
         <h2>{{ program.program_name }}</h2>
         <p>{{ program.College }}</p>
-        <p> {{ program.Degree }}</p>
+        <p>{{ program.Degree }}</p>
 
         <h3>Requirements</h3>
         {% for requirement in requirements %}
@@ -20,7 +20,7 @@
             <li>Statement of Purpose?: {{ requirement.Statement_of_purpose }}</li>
             <li>Personal Statement?: {{ requirement.Personal_statement }}</li>
         </ul>
-    {% end block %}
-
+        {% endfor %}
+    {% endblock %}
 </body>
 </html>

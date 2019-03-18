@@ -1,4 +1,5 @@
-from django.shortcuts import render, HttpResponseRedirect
+from django.shortcuts import render, HttpResponseRedirect, get_object_or_404
+from .models import Program, Requirement
 from .forms import *
 
 
@@ -43,6 +44,11 @@ def search(request):
 def program(request):
     return render(request, 'program.html')
 
+def programDetail(request, program_id):
+    currentProgram = get_object_or_404(Program, pk=program_id)
+    Requirements = Requirement.objects.filter(program_id=program_id)
+    context = {'program': currentProgram, 'requirements': Requirements}
+    return render(request, 'programDetail.html', context)
 
 def createProgram(request):
     return render(request, 'createProgram.html')

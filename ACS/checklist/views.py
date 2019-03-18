@@ -34,7 +34,7 @@ def accLogin(request):
 
             user = AuthBackend.authenticate(request, username=username, password=password)
             if user is not None:
-                login(request,user)
+                login(request, user)
 
             return HttpResponseRedirect('/checklist/')
     else:

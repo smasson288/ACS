@@ -71,7 +71,7 @@ def studentCreateAccount(request):
 
 
 def staffCreateAccount(request):
-    return render(request, 'staffCreateAccount.html')
+    return render(request, 'staffCreateAccount.html', {'form': InstitutionSignUpForm()})
 
 
 def checklist(request):

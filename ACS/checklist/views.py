@@ -1,17 +1,41 @@
+from django.contrib import messages
+from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, HttpResponseRedirect, get_object_or_404
-from .models import Program, Requirement
+from django.contrib.auth import logout, login
+from django.views.decorators.csrf import csrf_protect
 from .forms import *
+from .backends import *
+from .models import *
 
 
 def index(request):
     return render(request, 'index.html')
 
-
-def login(request):
+@csrf_protect
+def accLogin(request):
     if request.method == 'POST':
         form = SignInForm(request.POST)
         if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
             #try to log user in
+            try:
+                user = Staff.objects.get(username=username)
+            except ObjectDoesNotExist:
+                try:
+                    user = Student.objects.get(username=username)
+                except ObjectDoesNotExist:
+                    messages.warning(request, 'username does not exist')
+                    return render(request, 'login.html')
+
+            if not check_password(password, user.password):
+                messages.warning(request, 'incorrect password, please try again')
+                return render(request, 'login.html')
+
+            user = AuthBackend.authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request,user)
+
             return HttpResponseRedirect('/checklist/')
     else:
         form = SignInForm()
@@ -22,7 +46,24 @@ def studentCreateAccount(request):
     if request.method == 'POST':
         form = StudentSignUpForm(request.POST)
         if form.is_valid():
-            #try to sign user up
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            reenter = form.cleaned_data['password_reenter']
+
+            username_count = len(Student.objects.filter(username=username))
+            if username_count != 0:
+                messages.warning(request, 'username is already taken')
+                return render(request, 'studentCreateAccount.html')
+
+            if password != reenter:
+                messages.warning(request, 'passwords does not match')
+                return render(request, 'studentCreateAccount.html')
+
+            user = Student.objects.create_user(username, password)
+            user.save()
+            #user = Student.objects.create_user(username=username, first_name="firstname", last_name="lastname", password=password)
+
+
             return HttpResponseRedirect('/login/')
     else:
         form = StudentSignUpForm()
@@ -44,6 +85,7 @@ def search(request):
             #search program in db
             return HttpResponseRedirect('/program/')
     form = ProgramSearchForm()
+
     return render(request, 'search.html', {'form': form})
 
 

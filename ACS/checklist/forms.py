@@ -11,6 +11,7 @@ class StudentSignUpForm(forms.Form):
     password = forms.CharField(label='Password', max_length=100, widget=forms.PasswordInput)
     password_reenter = forms.CharField(label='Re-enter Password', max_length=100, widget=forms.PasswordInput)
 
+
 class InstitutionSignUpForm(forms.Form):
     institution_name = forms.CharField(label='Institution Name', max_length=100)
     username = forms.CharField(label='Username', max_length=100)

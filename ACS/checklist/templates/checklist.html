@@ -3,8 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <title>Checklist</title>
+    {% block content %}
+        <h1> {{ user.username }}'s Checklist</h1>
+    {% endblock %}
 </head>
 <body>
+    {% if checklists %}
+        {% for checklist in checklists %}
+            <ul>
+                <li>Term Season: {{ checklist.Term_season }}</li>
+                <li>Term Year: {{ checklist.Term_Year }}</li>
+                <li>Recommendation letters?: {{ checklist.Recommendation_letters }}</li>
+                <li>Transcript?: {{ checklist.Transcript }}</li>
+                <li>Tests?: {{ checklist.Tests }}</li>
+                <li>Statement of Purpose?: {{ checklist.Statement_of_purpose }}</li>
+                <li>Personal Statement?: {[checklist.Personal_statement }}</li>
+            </ul>
+            <br/>
+        {% endfor %}
+    {% else %}
+        <p>No checklists were found. Please add checklists.</p>
+    {% endif %}
 
 </body>
 </html>

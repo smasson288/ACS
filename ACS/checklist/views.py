@@ -75,7 +75,14 @@ def staffCreateAccount(request):
 
 
 def checklist(request):
-    return render(request, 'checklist.html')
+    if request.user.is_authenticated:
+        username = request.user.username
+        user_model = get_object_or_404(Student, pk=username)
+        checklists = Checklist.objects.filter(Student_id=user_model.username)
+        return render(request, 'checklist.html', {'user': user_model, 'checklists': checklists})
+    else:
+        return HttpResponseRedirect('/login/')
+
 
 
 def search(request):

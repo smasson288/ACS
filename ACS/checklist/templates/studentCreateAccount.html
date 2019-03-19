@@ -5,6 +5,15 @@
     <title>Title</title>
 </head>
 <body>
+    {% if messages %}
+        <p>
+            <ul class="messages">
+                {% for message in messages %}
+                    Warning: {{ message }}
+                {% endfor %}
+            </ul>
+        </p>
+    {% endif %}
     <form action="/studentCreateAccount/" method="post">
         {% csrf_token %}
         {{ form.as_p }}

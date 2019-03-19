@@ -10,38 +10,51 @@
 <body>
     <button onclick="location.href='{% url 'checklist:search' %}'"><i> search for a new program </i></button>
     {% if checklists %}
+        <table style="width:100%">
+        <tr>
+            <th>School</th>
+            <th>Major</th>
+            <th>Degree</th>
+            <th>Term</th>
+            <th>Year</th>
+            <th>References</th>
+            <th>Transcript</th>
+            <th>Tests</th>
+            <th>SOP</th>
+            <th>PS</th>
+            <th>Update</th>
+        </tr>
         {% for checklist in checklists %}
             <form action="/checklist/" method="post">
                 {% csrf_token %}
-            <ul>
+            <tr align="center">
                 <input type="hidden" name="checklist_id" value="{{ checklist.0.Checklist_id }}">
-                <li>Term Season: {{ checklist.0.Term_season }}</li>
-                <li>Term Year: {{ checklist.0.Term_Year }}</li>
-                {% if checklist.1.Recommendation_letters %}
-                <li>Recommendation letters:
+                <td>{{ checklist.2.School_id.School_name }}</td>
+                <td>{{ checklist.2.Major }}</td>
+                <td>{{ checklist.2.Degree }}</td>
+                <td>{{ checklist.0.Term_season }}</td>
+                <td>{{ checklist.0.Term_Year }}</td>
+                <td>{% if checklist.1.Recommendation_letters %}
                 <input type="checkbox" name="references" id="id_references" {% if checklist.0.Recommendation_letters %} checked {% endif %}></li>
-                {% endif %}
-                {% if checklist.1.Transcript %}
-                <li>Transcript:
+                {% endif %}</td>
+                <td>{% if checklist.1.Transcript %}
                 <input type="checkbox" name="official_transcript" id="id_official_transcript" {% if checklist.0.Transcript %} checked {% endif %}></li>
-                {% endif %}
-                {% if checklist.1.Tests %}
-                <li>Tests:
+                {% endif %}</td>
+                <td>{% if checklist.1.Tests %}
                 <input type="checkbox" name="tests" id="id_tests" {% if checklist.0.Tests %} checked {% endif %}></li>
-                {% endif %}
-                {% if checklist.1.Statement_of_purpose %}
-                <li>Statement of Purpose:
+                {% endif %}</td>
+                <td>{% if checklist.1.Statement_of_purpose %}
                 <input type="checkbox" name="statement_of_purpose" id="id_statement_of_purpose" {% if checklist.0.Statement_of_purpose %} checked {% endif %}></li>
-                {% endif %}
-                {% if checklist.1.Personal_statement %}
-                <li>Personal Statement:
+                {% endif %}</td>
+                <td>{% if checklist.1.Personal_statement %}
                 <input type="checkbox" name="personal_statement" id="id_personal_statement" {% if checklist.0.Personal_statement %} checked {% endif %}></li>
-                {% endif %}
-            </ul>
-            <input type="submit" value="update">
+                {% endif %}</td>
+                <td><input type="submit" value="update"></td>
+            </tr>
             </form>
             <br/>
         {% endfor %}
+        </table>
     {% else %}
         <p>No checklists were found. Please add checklists.</p>
     {% endif %}

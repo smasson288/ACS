@@ -136,7 +136,7 @@ def checklist(request):
             requirements = []
 
             for list in checklists:
-                requirements.append([list, Requirement.objects.get(Requirement_id=list.Requirement_id.Requirement_id)])
+                requirements.append([list, Requirement.objects.get(Requirement_id=list.Requirement_id.Requirement_id), list.Requirement_id.Program_id])
 
             return render(request, 'checklist.html', {'user': request.user, 'checklists': requirements})
         return HttpResponseRedirect('/login/')
@@ -149,7 +149,7 @@ def checklist(request):
             requirements = []
 
             for list in checklists:
-                requirements.append([list, Requirement.objects.get(Requirement_id=list.Requirement_id.Requirement_id)])
+                requirements.append([list, Requirement.objects.get(Requirement_id=list.Requirement_id.Requirement_id), list.Requirement_id.Program_id])
 
             return render(request, 'checklist.html', {'user': user_model, 'checklists': requirements})
         else:
@@ -201,7 +201,7 @@ def programDetail(request, program_id):
 
     currentProgram = get_object_or_404(Program, pk=program_id)
     requirements = Requirement.objects.filter(Program_id=program_id)
-    context = {'program': currentProgram, 'requirements': requirements}
+    context = {'program': currentProgram, 'requirements': requirements, 'university_name':currentProgram.School_id.School_name}
 
     return render(request, 'programDetail.html', context)
 

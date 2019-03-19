@@ -61,7 +61,7 @@ def studentCreateAccount(request):
             user = Student.objects.create_user(username, password)
             user.save()
 
-            return HttpResponseRedirect('/accLogin/')
+            return HttpResponseRedirect('/login/')
     else:
         form = StudentSignUpForm()
     return render(request, 'studentCreateAccount.html', {'form': form})
@@ -90,7 +90,7 @@ def search(request):
 
             program_list = []
             programs = Program.objects.filter(Degree__contains=degree, Major__contains=major, School_id__School_name__contains=university).all()
-            return render(request, 'search.html', {'form': form, 'programs': programs})
+            return render(request, 'search.html', {'programs': programs})
 
     form = ProgramSearchForm()
 
@@ -103,7 +103,7 @@ def program(request):
 
 def programDetail(request, program_id):
     currentProgram = get_object_or_404(Program, pk=program_id)
-    Requirements = Requirement.objects.filter(program_id=program_id)
+    Requirements = Requirement.objects.filter(Program_id=program_id)
     context = {'program': currentProgram, 'requirements': Requirements}
     return render(request, 'programDetail.html', context)
 

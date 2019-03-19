@@ -11,13 +11,19 @@
         {{ form.as_p }}
         <input type="submit" value="search">
     </form>
-    {% endif %}
-    {% if programs %}
-        {% for program in programs %}
-            <div>////////</div>
-            {{ program.Degree }}
-            {{ program.Major }}
-        {% endfor %}
+    {% else %}
+        {% if programs %}
+            {% for program in programs %}
+                <div>////////</div>
+                <a href="/program/{{ program.Program_id }}/">
+                {{ program.School_id.School_name }}
+                {{ program.Degree }}
+                {{ program.Major }}
+                </a>
+            {% endfor %}
+        {% else %}
+            <p>No programs were found.</p>
+        {% endif %}
     {% endif %}
 </body>
 </html>

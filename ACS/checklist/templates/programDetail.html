@@ -14,11 +14,11 @@
         {% for requirement in requirements %}
         <ul>
             <li>Term Year: {{ requirement.Term_Year}} </li>
-            <li>Recommendation letter?: {{ requirement.Recommendation_letters }}</li>
-            <li>Transcript?: {{ requirement.Transcript }}</li>
-            <li>Tests?: {{ requirement.Tests }}</li>
-            <li>Statement of Purpose?: {{ requirement.Statement_of_purpose }}</li>
-            <li>Personal Statement?: {{ requirement.Personal_statement }}</li>
+            <li>Recommendation letter: {% if requirement.Recommendation_letters %} Required {% else %} Not Required {% endif %}</li>
+            <li>Transcript: {% if requirement.Transcript %} Required {% else %} Not Required {% endif %}</li>
+            <li>Tests: {% if requirement.Tests %} Required {% else %} Not Required {% endif %}</li>
+            <li>Statement of Purpose: {% if requirement.Statement_of_purpose %} Required {% else %} Not Required {% endif %}</li>
+            <li>Personal Statement: {% if requirement.Personal_statement %} Required {% else %} Not Required {% endif %}</li>
         </ul>
             <form method="post">
                 {% csrf_token %}

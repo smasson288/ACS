@@ -14,13 +14,19 @@ class TestChecklist(unittest.TestCase):
         self.assertEqual(response.status_code, OK)
 
     def test_login_student(self):
-        self.client.post('/studentCreateAccount/', {'username': 'student', 'password': 'Iheartschool'})
+        self.client.post('/studentCreateAccount/', {'username': 'student', 'password': 'Iheartschool', 'password_reenter': 'Iheartschool'})
         response = self.client.post('/login/', {'username': 'student', 'password': 'Iheartschool'})
         self.assertEqual(response.status_code, SUCCESS_REDIRECT)
         self.assertEqual(response.url, '/checklist/')
 
+    def test_login_staff(self):
+        self.client.post('/staffCreateAccount/', {'institution_name': 'CWRU', 'username': 'staff1', 'password': 'Iamschool', 'password_reenter': "Iamschool"})
+        response = self.client.post('/login/', {'username': 'staff1', 'password': 'Iamschool'})
+        self.assertEqual(response.status_code, SUCCESS_REDIRECT)
+        self.assertEqual(response.url, '/checklist/')
+
     def test_dup_username(self):
-        self.client.post('/studentCreateAccount/', {'username': 'student', 'password': 'iheartschool'})
+        self.client.post('/studentCreateAccount/', {'username': 'student', 'password': 'iheartschool', 'password_reenter': 'Iheartschool'})
         self.client.post('/login/', {'username': 'student', 'password': 'iheartschool'})
         #self.client.post(response.build_absolute_uri('/'), {})
         response = self.client.post('/studentCreateAccount/', {'username': 'student', 'password': 'Ihateschool'})
@@ -43,7 +49,7 @@ class TestChecklist(unittest.TestCase):
                                                         'personal_statement': False,
                                                         'references': True,
                                                         'official_transcript': True})
-        self.assertEquals(response.url, '/checklist/')
+        self.assertEquals(response.url, '/login/')
         response = self.client.post('/program/0/')
         self.assertEqual(response.status_code, OK)
 
@@ -59,3 +65,4 @@ class TestChecklist(unittest.TestCase):
                                                         'official_transcript': True})
         response = self.client.post('/search/', {'university_name': 'CWRU', 'degree_type': 'masters', 'major': 'CS'})
         self.assertEqual(response.status_code, OK)
+        self.assertTrue(response.context['programs'] == True)

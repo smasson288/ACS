@@ -5,6 +5,16 @@
     <title>Title</title>
 </head>
 <body>
+    {% if messages %}
+        <p>
+            <ul class="messages">
+                {% for message in messages %}
+                    Warning: {{ message }}
+                {% endfor %}
+            </ul>
+        </p>
+        <button onclick="location.href='{% url 'checklist:createProgram' %}'"><i> create a new program </i></button>
+    {% endif %}
     {% if form %}
     <form action="/search/" method="post">
         {% csrf_token %}
@@ -14,15 +24,15 @@
     {% endif %}
     {% if programs %}
         {% for program in programs %}
-            <div>////////</div>
-            <a href="{% url 'checklist:detail_program' program.Program_id %}">******</a>
+            <div/>
+            <a href="{% url 'checklist:detail_program' program.Program_id %}">
             {{ program.School_id.School_name }}
             {{ program.Degree }}
             {{ program.Major }}
             </a>
         {% endfor %}
-    {% else %}
-        <p>No programs were found.</p>
+        <br/><br/>
+        <button onclick="location.href='{% url 'checklist:createProgram' %}'"><i> create a new program </i></button>
     {% endif %}
 </body>
 </html>

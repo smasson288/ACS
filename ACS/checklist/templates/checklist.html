@@ -8,6 +8,7 @@
     {% endblock %}
 </head>
 <body>
+    <button onclick="location.href='{% url 'checklist:search' %}'"><i> search for a new program </i></button>
     {% if checklists %}
         {% for checklist in checklists %}
             <form action="/checklist/" method="post">

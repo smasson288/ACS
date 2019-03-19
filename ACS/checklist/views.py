@@ -21,6 +21,12 @@ def accLogin(request):
             password = form.cleaned_data['password']
             #try to log user in
             try:
+                user = User.objects.get(username=username)
+            except ObjectDoesNotExist:
+                messages.warning(request, 'username does not exist')
+                return render(request, 'login.html', {'form': form})
+            '''
+            try:
                 user = Staff.objects.get(username=username)
             except ObjectDoesNotExist:
                 try:
@@ -28,7 +34,7 @@ def accLogin(request):
                 except ObjectDoesNotExist:
                     messages.warning(request, 'username does not exist')
                     return render(request, 'login.html', {'form': form})
-
+            '''
             if not check_password(password, user.password):
                 messages.warning(request, 'incorrect password, please try again')
                 return render(request, 'login.html', {'form': form})
@@ -51,7 +57,8 @@ def studentCreateAccount(request):
             password = form.cleaned_data['password']
             reenter = form.cleaned_data['password_reenter']
 
-            username_count = len(Student.objects.filter(username=username))
+            username_count = len(User.objects.filter(username=username))
+            #username_count = len(Student.objects.filter(username=username))
             if username_count != 0:
                 messages.warning(request, 'username is already taken')
                 return render(request, 'studentCreateAccount.html', {'form': form})
@@ -60,7 +67,8 @@ def studentCreateAccount(request):
                 messages.warning(request, 'passwords does not match')
                 return render(request, 'studentCreateAccount.html', {'form': form})
 
-            user = Student.objects.create_user(username, password)
+            user = User.objects.create_user(username, password)
+            #user = Student.objects.create_user(username, password)
             user.save()
 
             return HttpResponseRedirect('/login/')
@@ -78,7 +86,8 @@ def staffCreateAccount(request):
             reenter = form.cleaned_data['password_reenter']
             school_name = form.cleaned_data['institution_name']
 
-            username_count = len(Staff.objects.filter(username=username))
+            username_count = len(User.objects.filter(username=username))
+            #username_count = len(Staff.objects.filter(username=username))
             if username_count != 0:
                 messages.warning(request, 'username is already taken')
                 return render(request, 'staffCreateAccount.html', {'form': form})
@@ -99,7 +108,9 @@ def staffCreateAccount(request):
                 school = School(School_id=school_id, School_name=school_name)
                 school.save()
 
-            user = Staff.objects.create_user(username, password, school_id)
+            #user = Staff.objects.create_user(username, password, school_id)
+            user = User.objects.create_user(username, password)
+            user.school_id = school_id
             user.save()
 
             return HttpResponseRedirect('/login/')
@@ -132,7 +143,8 @@ def checklist(request):
     else:
         if request.user.is_authenticated:
             username = request.user.username
-            user_model = get_object_or_404(Student, pk=username)
+            #user_model = get_object_or_404(Student, pk=username)
+            user_model = get_object_or_404(User, pk=username)
             checklists = Checklist.objects.filter(Student_id=username)
             requirements = []
 

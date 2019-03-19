@@ -121,5 +121,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-AUTH_USER_MODEL = 'checklist.Student'
+#AUTH_USER_MODEL = 'checklist.Student', 'checklist.Staff'
+AUTH_USER_MODEL = 'checklist.User'
 AUTHENTICATION_BACKENDS = ('checklist.backends.AuthBackend',)

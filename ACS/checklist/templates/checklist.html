@@ -10,15 +10,24 @@
 <body>
     {% if checklists %}
         {% for checklist in checklists %}
+            <form action="/checklist/" method="post">
             <ul>
+                <input type="hidden" name="checklist_id" value="{{ checklist.Checklist_id }}">
                 <li>Term Season: {{ checklist.Term_season }}</li>
                 <li>Term Year: {{ checklist.Term_Year }}</li>
-                <li>Recommendation letters?: {{ checklist.Recommendation_letters }}</li>
-                <li>Transcript?: {{ checklist.Transcript }}</li>
-                <li>Tests?: {{ checklist.Tests }}</li>
-                <li>Statement of Purpose?: {{ checklist.Statement_of_purpose }}</li>
-                <li>Personal Statement?: {[checklist.Personal_statement }}</li>
+                <li>Recommendation letters?:
+                <input type="checkbox" name="references" id="id_references" {% if checklist.Recommendation_letters %} checked {% endif %}></li>
+                <li>Transcript?:
+                <input type="checkbox" name="official_transcript" id="id_official_transcript" {% if checklist.Transcript %} checked {% endif %}></li>
+                <li>Tests?:
+                <input type="checkbox" name="tests" id="id_tests" {% if checklist.Tests %} checked {% endif %}></li>
+                <li>Statement of Purpose?:
+                <input type="checkbox" name="statement_of_purpose" id="id_statement_of_purpose" {% if checklist.Statement_of_purpose %} checked {% endif %}></li>
+                <li>Personal Statement?: </li>
+                <input type="checkbox" name="personal_statement" id="id_personal_statement" {% if checklist.Personal_statement %} checked {% endif %}></li>
             </ul>
+            <input type="submit" value="update">
+            </form>
             <br/>
         {% endfor %}
     {% else %}

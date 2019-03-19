@@ -49,3 +49,12 @@ class FeedbackForm(forms.Form):
                                                                         ("WAITLISTED", "Waitlisted"),
                                                                         ("DENIED", 'Denied')
                                                                         ))
+
+
+class ChecklistForm(forms.Form):
+    checklist_id = forms.CharField(max_length=100)
+    tests = forms.BooleanField(label='Standardized Test', required=False)
+    statement_of_purpose = forms.BooleanField(label='Statement of Purpose', required=False)
+    personal_statement = forms.BooleanField(label='Personal Statement', required=False)
+    references = forms.BooleanField(label='References', required=False)
+    official_transcript = forms.BooleanField(label='Official Transcript', required=False)

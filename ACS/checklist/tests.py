@@ -1,6 +1,9 @@
 from django.test import TestCase, Client
 import unittest
 
+SUCCESS_REDIRECT = 302
+OK = 200
+
 # Create your tests here.
 class TestChecklist(unittest.TestCase):
     def setUp(self):
@@ -8,12 +11,14 @@ class TestChecklist(unittest.TestCase):
 
     def test_index(self):
         response = self.client.get('/')
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, OK)
 
     def test_login_student(self):
-        self.client.post('/studentCreateAccount/', {'username': 'student', 'password': 'Iheartschool'})
+        self.client.post('/studentCreateAccount/', {'username': 'student', 'password': 'Iheartschool',
+                                                    'password_reenter': 'Iheartschool'})
         response = self.client.post('/login/', {'username': 'student', 'password': 'Iheartschool'})
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, SUCCESS_REDIRECT)
+        print(response)
         self.assertEqual(response.url, '/checklist/')
 
     def test_dup_username(self):

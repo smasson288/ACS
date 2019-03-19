@@ -149,8 +149,10 @@ def search(request):
             degree = form.cleaned_data['degree_type']
             major = form.cleaned_data['major']
 
-            program_list = []
             programs = Program.objects.filter(Degree__contains=degree, Major__contains=major, School_id__School_name__contains=university).all()
+            if len(programs) == 0:
+                messages.warning(request, 'there is no results based on your criteria')
+                return render(request, 'search.html', {'form': form})
             return render(request, 'search.html', {'form':form,'programs':programs})
 
     form = ProgramSearchForm()
@@ -187,7 +189,18 @@ def programDetail(request, program_id):
 
     return render(request, 'programDetail.html', context)
 
+@csrf_protect
 def createProgram(request):
+    user = request.user
+    if not user.is_anonymous:
+        try:
+            if not user.is_authenticated:
+                return HttpResponseRedirect('/')
+        except ObjectDoesNotExist:
+            return HttpResponseRedirect('/staffCreateAccount/')
+    else:
+        return HttpResponseRedirect('/accLogin/')
+
     if request.method == 'POST':
         form = ProgramCreateForm(request.POST)
         if form.is_valid():
@@ -227,10 +240,9 @@ def createProgram(request):
             requirement.save()
 
             return HttpResponseRedirect('/checklist/')
+
     form = ProgramCreateForm()
     return render(request, 'createProgram.html', {'form': form})
-
-
 def feedback(request):
     form = FeedbackForm()
     return render(request, 'feedback.html', {'form': form})

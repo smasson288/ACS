@@ -11,20 +11,31 @@
     {% if checklists %}
         {% for checklist in checklists %}
             <form action="/checklist/" method="post">
+                {% csrf_token %}
             <ul>
-                <input type="hidden" name="checklist_id" value="{{ checklist.Checklist_id }}">
-                <li>Term Season: {{ checklist.Term_season }}</li>
-                <li>Term Year: {{ checklist.Term_Year }}</li>
+                <input type="hidden" name="checklist_id" value="{{ checklist.0.Checklist_id }}">
+                <li>Term Season: {{ checklist.0.Term_season }}</li>
+                <li>Term Year: {{ checklist.0.Term_Year }}</li>
+                {% if checklist.1.Recommendation_letters %}
                 <li>Recommendation letters?:
                 <input type="checkbox" name="references" id="id_references" {% if checklist.Recommendation_letters %} checked {% endif %}></li>
+                {% endif %}
+                {% if checklist.1.Transcript %}
                 <li>Transcript?:
                 <input type="checkbox" name="official_transcript" id="id_official_transcript" {% if checklist.Transcript %} checked {% endif %}></li>
+                {% endif %}
+                {% if checklist.1.Tests %}
                 <li>Tests?:
                 <input type="checkbox" name="tests" id="id_tests" {% if checklist.Tests %} checked {% endif %}></li>
+                {% endif %}
+                {% if checklist.1.Statement_of_purpose %}
                 <li>Statement of Purpose?:
                 <input type="checkbox" name="statement_of_purpose" id="id_statement_of_purpose" {% if checklist.Statement_of_purpose %} checked {% endif %}></li>
+                {% endif %}
+                {% if checklist.1.Personal_statement %}
                 <li>Personal Statement?: </li>
                 <input type="checkbox" name="personal_statement" id="id_personal_statement" {% if checklist.Personal_statement %} checked {% endif %}></li>
+                {% endif %}
             </ul>
             <input type="submit" value="update">
             </form>

@@ -33,8 +33,10 @@ class School(models.Model):
     Address_state = models.CharField(max_length=100)
     Address_zipcode = models.CharField(max_length=100)
 
+
 class Staff(Student):
     School_id = models.ForeignKey(School, on_delete=models.CASCADE)
+
 
 class Program(models.Model):
     Program_id = models.IntegerField(primary_key=True, auto_created=True)

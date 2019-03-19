@@ -84,7 +84,7 @@ def search(request):
 
             program_list = []
             programs = Program.objects.filter(Degree__contains=degree, Major__contains=major, School_id__School_name__contains=university).all()
-            return render(request, 'search.html', {'form':form,'programs':programs})
+            return render(request, 'search.html', {'form': form, 'programs': programs})
 
     form = ProgramSearchForm()
 
@@ -94,11 +94,13 @@ def search(request):
 def program(request):
     return render(request, 'program.html')
 
+
 def programDetail(request, program_id):
     currentProgram = get_object_or_404(Program, pk=program_id)
     Requirements = Requirement.objects.filter(program_id=program_id)
     context = {'program': currentProgram, 'requirements': Requirements}
     return render(request, 'programDetail.html', context)
+
 
 def createProgram(request):
     if request.method == 'POST':
@@ -106,31 +108,31 @@ def createProgram(request):
         if form.is_valid():
             #create a new program in db
 
-            program_id = Program.objects.filter().order_by('Program_id').last().Program_id
-            if program_id is not None:
-                program_id = program_id + 1
-            else:
+            last_program = Program.objects.filter().order_by('Program_id').last()
+            if last_program is None:
                 program_id = 0
+            else:
+                program_id = last_program.Program_id + 1
 
             university_name = form.cleaned_data['university_name']
             try:
                 school = School.objects.get(School_name=university_name)
                 school_id = school.School_id
             except School.DoesNotExist:
-                school_id = School.objects.filter().order_by('School_id').last().School_id
-                if school_id is None:
-                    school_id = 0
+                last_school = School.objects.filter().order_by('School_id').last()
+                if last_school is not None:
+                    school_id = last_school.School_id + 1
                 else:
-                    school_id = school_id + 1
+                    school_id = 0
                 school = School(School_id=school_id, School_name=university_name)
                 school.save()
 
             program = Program(Program_id=program_id, Major=form.cleaned_data['major'], Degree=form.cleaned_data['degree_type'], School_id_id=school_id)
             program.save()
 
-            req_id = Requirement.objects.filter().order_by('Requirement_id').last().Requirement_id
-            if req_id is not None:
-                req_id = req_id + 1
+            last_requirement = Requirement.objects.filter().order_by('Requirement_id').last()
+            if last_requirement is not None:
+                req_id = last_requirement.Requirement_id + 1
             else:
                 req_id = 0
 

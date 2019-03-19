@@ -29,11 +29,11 @@ class ProgramCreateForm(forms.Form):
     university_name = forms.CharField(label='University Name', max_length=100)
     degree_type = forms.CharField(label='Degree Type', max_length=100)
     major = forms.CharField(label='Major', max_length=100)
-    tests = forms.BooleanField(label='Standardized Test')
-    statement_of_purpose = forms.BooleanField(label='Statement of Purpose')
-    personal_statement = forms.BooleanField(label='Personal Statement')
-    references = forms.BooleanField(label='References')
-    official_transcript = forms.BooleanField(label='Official Transcript')
+    tests = forms.BooleanField(label='Standardized Test', required=False)
+    statement_of_purpose = forms.BooleanField(label='Statement of Purpose', required=False)
+    personal_statement = forms.BooleanField(label='Personal Statement', required=False)
+    references = forms.BooleanField(label='References', required=False)
+    official_transcript = forms.BooleanField(label='Official Transcript', required=False)
 
 
 class FeedbackForm(forms.Form):

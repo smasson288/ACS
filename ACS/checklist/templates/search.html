@@ -5,10 +5,19 @@
     <title>Title</title>
 </head>
 <body>
+    {% if form %}
     <form action="/search/" method="post">
         {% csrf_token %}
         {{ form.as_p }}
         <input type="submit" value="search">
     </form>
+    {% endif %}
+    {% if programs %}
+        {% for program in programs %}
+            <div>////////</div>
+            {{ program.Degree }}
+            {{ program.Major }}
+        {% endfor %}
+    {% endif %}
 </body>
 </html>

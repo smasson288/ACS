@@ -12,6 +12,16 @@ class UserManager(BaseUserManager):
 
         return user
 
+    def create_user(self, username, password, school):
+        user = self.model(
+            username=username,
+            School_id_id=school,
+        )
+        user.set_password(password)
+        user.save(using=self._db)
+
+        return user
+
 class Student(AbstractBaseUser):
     username = models.CharField(primary_key=True, max_length=100)
     first_name = models.CharField(max_length=100)
@@ -33,17 +43,16 @@ class School(models.Model):
     Address_state = models.CharField(max_length=100)
     Address_zipcode = models.CharField(max_length=100)
 
-
 class Staff(Student):
     School_id = models.ForeignKey(School, on_delete=models.CASCADE)
 
+    REQUIRED_FIELDS = ['password', 'School_id']
 
 class Program(models.Model):
     Program_id = models.IntegerField(primary_key=True, auto_created=True)
     Major = models.CharField(max_length=100)
     Degree = models.CharField(max_length=100)
     School_id = models.ForeignKey(School, on_delete=models.CASCADE)
-
 
 class Requirement(models.Model):
     Requirement_id = models.IntegerField(primary_key=True, auto_created=True)
@@ -55,7 +64,6 @@ class Requirement(models.Model):
     Tests = models.BooleanField(default=False)
     Statement_of_purpose = models.BooleanField(default=False)
     Personal_statement = models.BooleanField(default=False)
-
 
 class Checklist(models.Model):
     Checklist_id = models.IntegerField(primary_key=True, auto_created=True)

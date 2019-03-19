@@ -15,7 +15,7 @@
         {% if programs %}
             {% for program in programs %}
                 <div>////////</div>
-                <a href="/program/{{ program.Program_id }}/">
+                <a href="{% url 'checklist:detail_program' program.Program_id %}">******</a>
                 {{ program.School_id.School_name }}
                 {{ program.Degree }}
                 {{ program.Major }}

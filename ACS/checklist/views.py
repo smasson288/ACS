@@ -7,8 +7,10 @@ from .forms import *
 from .backends import *
 from .models import *
 
+
 def index(request):
     return render(request, 'index.html')
+
 
 @csrf_protect
 def accLogin(request):
@@ -65,6 +67,7 @@ def studentCreateAccount(request):
     else:
         form = StudentSignUpForm()
     return render(request, 'studentCreateAccount.html', {'form': form})
+
 
 def staffCreateAccount(request):
     if request.method == 'POST':
@@ -153,7 +156,7 @@ def search(request):
             if len(programs) == 0:
                 messages.warning(request, 'there is no results based on your criteria')
                 return render(request, 'search.html', {'form': form})
-            return render(request, 'search.html', {'form':form,'programs':programs})
+            return render(request, 'search.html', {'form': form, 'programs': programs})
 
     form = ProgramSearchForm()
 
@@ -162,6 +165,7 @@ def search(request):
 
 def program(request):
     return render(request, 'program.html')
+
 
 @csrf_protect
 def programDetail(request, program_id):
@@ -189,6 +193,7 @@ def programDetail(request, program_id):
 
     return render(request, 'programDetail.html', context)
 
+
 @csrf_protect
 def createProgram(request):
     user = request.user
@@ -199,7 +204,7 @@ def createProgram(request):
         except ObjectDoesNotExist:
             return HttpResponseRedirect('/staffCreateAccount/')
     else:
-        return HttpResponseRedirect('/accLogin/')
+        return HttpResponseRedirect('/login/')
 
     if request.method == 'POST':
         form = ProgramCreateForm(request.POST)
@@ -243,6 +248,8 @@ def createProgram(request):
 
     form = ProgramCreateForm()
     return render(request, 'createProgram.html', {'form': form})
+
+
 def feedback(request):
     form = FeedbackForm()
     return render(request, 'feedback.html', {'form': form})

@@ -12,7 +12,7 @@ class UserManager(BaseUserManager):
 
         return user
 
-    def create_user(self, username, password, school):
+    def create_staff_user(self, username, password, school):
         user = self.model(
             username=username,
             School_id_id=school,
@@ -21,6 +21,7 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
 
         return user
+
 
 class Student(AbstractBaseUser):
     username = models.CharField(primary_key=True, max_length=100)

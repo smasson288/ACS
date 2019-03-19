@@ -106,32 +106,52 @@ def staffCreateAccount(request):
 
 @csrf_protect
 def checklist(request):
-    if request.user.is_authenticated:
-        username = request.user.username
-        user_model = get_object_or_404(Student, pk=username)
-        checklists = Checklist.objects.filter(Student_id=username)
-        requirements = []
+    if request.method == 'POST':
+        form = ChecklistForm(request.POST)
 
-        for list in checklists:
-            requirements.append([list, Requirement.objects.get(Requirement_id=list.Requirement_id.Requirement_id)])
+        if form.is_valid():
+            checklist = Checklist.objects.get(Checklist_id=form.cleaned_data['checklist_id'])
+            checklist.Tests = form.cleaned_data['tests']
+            checklist.Statement_of_purpose = form.cleaned_data['statement_of_purpose']
+            checklist.Personal_statement = form.cleaned_data['personal_statement']
+            checklist.Recommendation_letters = form.cleaned_data['references']
+            checklist.Transcript = form.cleaned_data['official_transcript']
+            checklist.save()
 
-        return render(request, 'checklist.html', {'user': user_model, 'checklists': requirements})
-    else:
+            checklists = Checklist.objects.filter(Student_id=request.user.username)
+            requirements = []
+
+            for list in checklists:
+                requirements.append([list, Requirement.objects.get(Requirement_id=list.Requirement_id.Requirement_id)])
+
+            return render(request, 'checklist.html', {'user': request.user, 'checklists': requirements})
         return HttpResponseRedirect('/login/')
+    else:
+        if request.user.is_authenticated:
+            username = request.user.username
+            user_model = get_object_or_404(Student, pk=username)
+            checklists = Checklist.objects.filter(Student_id=username)
+            requirements = []
+
+            for list in checklists:
+                requirements.append([list, Requirement.objects.get(Requirement_id=list.Requirement_id.Requirement_id)])
+
+            return render(request, 'checklist.html', {'user': user_model, 'checklists': requirements})
+        else:
+            return HttpResponseRedirect('/login/')
+
 
 def search(request):
     if request.method == 'POST':
         form = ProgramSearchForm(request.POST)
         if form.is_valid():
-            print(form)
             university = form.cleaned_data['university_name']
             degree = form.cleaned_data['degree_type']
             major = form.cleaned_data['major']
 
             program_list = []
             programs = Program.objects.filter(Degree__contains=degree, Major__contains=major, School_id__School_name__contains=university).all()
-            print(programs)
-            return render(request, 'search.html', {'form': form, 'programs': programs})
+            return render(request, 'search.html', {'form':form,'programs':programs})
 
     form = ProgramSearchForm()
 
@@ -156,9 +176,7 @@ def programDetail(request, program_id):
 
             requirement = Requirement.objects.filter(Program_id=program_id).last()
             checklist = Checklist(checklist_id, requirement.Requirement_id, request.user, requirement.Term_season,
-                                  requirement.Term_year, requirement.Recommendation_letters,
-                                  requirement.Transcript, requirement.Tests, requirement.Statement_of_purpose,
-                                  requirement.Personal_statement)
+                                  requirement.Term_year, False, False, False, False, False)
             checklist.save()
 
         return HttpResponseRedirect('/checklist/')

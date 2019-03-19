@@ -123,13 +123,15 @@ def search(request):
     if request.method == 'POST':
         form = ProgramSearchForm(request.POST)
         if form.is_valid():
+            print(form)
             university = form.cleaned_data['university_name']
             degree = form.cleaned_data['degree_type']
             major = form.cleaned_data['major']
 
             program_list = []
             programs = Program.objects.filter(Degree__contains=degree, Major__contains=major, School_id__School_name__contains=university).all()
-            return render(request, 'search.html', {'form':form,'programs':programs})
+            print(programs)
+            return render(request, 'search.html', {'form': form, 'programs': programs})
 
     form = ProgramSearchForm()
 

@@ -5,6 +5,10 @@
     <title>Title</title>
 </head>
 <body>
-
+    <form action="/search/" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="search">
+    </form>
 </body>
 </html>

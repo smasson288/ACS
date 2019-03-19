@@ -27,7 +27,7 @@ class Student(AbstractBaseUser):
 class School(models.Model):
     School_id = models.IntegerField(primary_key=True, auto_created=True)
     School_desc = models.CharField(max_length=100)
-    School_name = models.CharField(max_length=100)
+    School_name = models.CharField(max_length=100, unique=True)
     Address_street = models.CharField(max_length=100)
     Address_city = models.CharField(max_length=100)
     Address_state = models.CharField(max_length=100)
@@ -38,8 +38,7 @@ class Staff(Student):
 
 class Program(models.Model):
     Program_id = models.IntegerField(primary_key=True, auto_created=True)
-    Program_name = models.CharField(max_length=100)
-    College = models.CharField(max_length=100)
+    Major = models.CharField(max_length=100)
     Degree = models.CharField(max_length=100)
     School_id = models.ForeignKey(School, on_delete=models.CASCADE)
 

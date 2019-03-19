@@ -7,7 +7,6 @@ from .forms import *
 from .backends import *
 from .models import *
 
-
 def index(request):
     return render(request, 'index.html')
 
@@ -26,15 +25,15 @@ def accLogin(request):
                     user = Student.objects.get(username=username)
                 except ObjectDoesNotExist:
                     messages.warning(request, 'username does not exist')
-                    return render(request, 'login.html', {'form': SignInForm()})
+                    return render(request, 'login.html', {'form': form})
 
             if not check_password(password, user.password):
                 messages.warning(request, 'incorrect password, please try again')
-                return render(request, 'login.html', {'form': SignInForm()})
+                return render(request, 'login.html', {'form': form})
 
             user = AuthBackend.authenticate(request, username=username, password=password)
             if user is not None:
-                login(request, user)
+                login(request,user)
 
             return HttpResponseRedirect('/checklist/')
     else:
@@ -61,36 +60,32 @@ def studentCreateAccount(request):
 
             user = Student.objects.create_user(username, password)
             user.save()
-            #user = Student.objects.create_user(username=username, first_name="firstname", last_name="lastname", password=password)
 
-
-            return HttpResponseRedirect('/login/')
+            return HttpResponseRedirect('/accLogin/')
     else:
         form = StudentSignUpForm()
     return render(request, 'studentCreateAccount.html', {'form': form})
 
-
 def staffCreateAccount(request):
-    return render(request, 'staffCreateAccount.html', {'form': InstitutionSignUpForm()})
+    return render(request, 'staffCreateAccount.html')
 
 
 def checklist(request):
-    if request.user.is_authenticated:
-        username = request.user.username
-        user_model = get_object_or_404(Student, pk=username)
-        checklists = Checklist.objects.filter(Student_id=user_model.username)
-        return render(request, 'checklist.html', {'user': user_model, 'checklists': checklists})
-    else:
-        return HttpResponseRedirect('/login/')
-
+    return render(request, 'checklist.html')
 
 
 def search(request):
     if request.method == 'POST':
         form = ProgramSearchForm(request.POST)
         if form.is_valid():
-            #search program in db
-            return HttpResponseRedirect('/program/')
+            university = form.cleaned_data['university_name']
+            degree = form.cleaned_data['degree_type']
+            major = form.cleaned_data['major']
+
+            program_list = []
+            programs = Program.objects.filter(Degree__contains=degree, Major__contains=major, School_id__School_name__contains=university).all()
+            return render(request, 'search.html', {'form':form,'programs':programs})
+
     form = ProgramSearchForm()
 
     return render(request, 'search.html', {'form': form})
@@ -110,6 +105,39 @@ def createProgram(request):
         form = ProgramCreateForm(request.POST)
         if form.is_valid():
             #create a new program in db
+
+            program_id = Program.objects.filter().order_by('Program_id').last().Program_id
+            if program_id is not None:
+                program_id = program_id + 1
+            else:
+                program_id = 0
+
+            university_name = form.cleaned_data['university_name']
+            try:
+                school = School.objects.get(School_name=university_name)
+                school_id = school.School_id
+            except School.DoesNotExist:
+                school_id = School.objects.filter().order_by('School_id').last().School_id
+                if school_id is None:
+                    school_id = 0
+                else:
+                    school_id = school_id + 1
+                school = School(School_id=school_id, School_name=university_name)
+                school.save()
+
+            program = Program(Program_id=program_id, Major=form.cleaned_data['major'], Degree=form.cleaned_data['degree_type'], School_id_id=school_id)
+            program.save()
+
+            req_id = Requirement.objects.filter().order_by('Requirement_id').last().Requirement_id
+            if req_id is not None:
+                req_id = req_id + 1
+            else:
+                req_id = 0
+
+            requirement = Requirement(Requirement_id=req_id, Program_id=program,Term_season="Fall", Term_year=2019, Recommendation_letters=form.cleaned_data['references'], Transcript=form.cleaned_data['official_transcript'],
+                                      Tests=form.cleaned_data['tests'], Statement_of_purpose=form.cleaned_data['statement_of_purpose'], Personal_statement=form.cleaned_data['personal_statement'])
+            requirement.save()
+
             return HttpResponseRedirect('/checklist/')
     form = ProgramCreateForm()
     return render(request, 'createProgram.html', {'form': form})

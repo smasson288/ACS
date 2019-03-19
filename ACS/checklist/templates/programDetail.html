@@ -20,6 +20,10 @@
             <li>Statement of Purpose?: {{ requirement.Statement_of_purpose }}</li>
             <li>Personal Statement?: {{ requirement.Personal_statement }}</li>
         </ul>
+            <form method="post">
+                {% csrf_token %}
+                <input type="submit" value="add to checklist">
+            </form>
         {% endfor %}
     {% endblock %}
 </body>

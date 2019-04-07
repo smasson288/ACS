@@ -286,5 +286,10 @@ def feedback(request, checklist_id):
             feedback.save()
             return HttpResponseRedirect('/checklist/')
     else:
-        form = FeedbackForm()
-        return render(request, 'feedback.html', {'form': form, 'checklist_id': checklist_id})
+        previous_feedback = Feedback.objects.filter(Checklist_id_id=checklist_id)
+        if previous_feedback is not None:
+            messages.warning(request, 'You already provided feedback for this checklist')
+            return HttpResponseRedirect('/checklist/')
+        else:
+            form = FeedbackForm()
+            return render(request, 'feedback.html', {'form': form, 'checklist_id': checklist_id})

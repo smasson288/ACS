@@ -3,21 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <style>
+        body,html{
+            height:100%;
+        }
+    </style>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('input').addClass('form-control');
+        })
+    </script>
 </head>
 <body>
-    {% if messages %}
-        <p>
-            <ul class="messages">
-                {% for message in messages %}
-                    Warning: {{ message }}
+    <div class="container h-100">
+      <div class="row h-100 justify-content-center align-items-center text-center">
+        <div class="col-6">
+            <form action="/staffCreateAccount/" method="post">
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+                {% for hidden_field in form.hidden_fields %}
+                    {{ hidden_field.errors }}
+                    {{ hidden_field }}
                 {% endfor %}
-            </ul>
-        </p>
-    {% endif %}
-    <form action="/staffCreateAccount/" method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="signup">
-    </form>
+                {% for field in form.visible_fields %}
+                    <div class="form-group">
+                    <label>{{ field.label_tag }}</label>
+                    {{ field.errors }}
+                    {{ field }}
+                    {{ field.help_text }}
+                    </div>
+                {% endfor %}
+                <br/>
+                <input type="submit" class="btn btn-primary" value="signup">
+            </form>
+            {% if messages %}
+                <br/>
+                <h5>
+                    {% for message in messages %}
+                        {{ message }}
+                    {% endfor %}
+                </h5>
+            {% endif %}
+        </div>
+      </div>
+    </div>
 </body>
 </html>

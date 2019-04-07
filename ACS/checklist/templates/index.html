@@ -9,21 +9,26 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <style>
-        body,html{
-            height:100%;
+        .vertical-center {
+            min-height: 100%;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
         }
     </style>
 </head>
 <body>
-    <div class="container h-100">
-      <div class="row h-100 justify-content-center align-items-center text-center">
-        <div class="col-12">
-            <h1 class="display-1">ACS</h1><br/>
-            <button onclick="location.href='{% url 'checklist:login' %}'" type="button" class="btn btn-primary">Login</button>
-            <button onclick="location.href='{% url 'checklist:studentCreateAccount' %}'" type="button" class="btn btn-primary">Student Signup</button><br/><br/>
-            <button onclick="location.href='{% url 'checklist:staffCreateAccount' %}'" type="button" class="btn btn-outline-primary">Institution Signup</button>
+    <div class="vertical-center">
+        <div class="container">
+          <div class="row h-100 justify-content-center align-items-center text-center">
+            <div class="col-12">
+                <h1 class="display-1">ACS</h1><br/>
+                <button onclick="location.href='{% url 'checklist:login' %}'" type="button" class="btn btn-primary">Login</button>
+                <button onclick="location.href='{% url 'checklist:studentCreateAccount' %}'" type="button" class="btn btn-primary">Student Signup</button><br/><br/>
+                <button onclick="location.href='{% url 'checklist:staffCreateAccount' %}'" type="button" class="btn btn-outline-primary">Institution Signup</button>
+            </div>
+          </div>
         </div>
-      </div>
     </div>
 </body>
 </html>

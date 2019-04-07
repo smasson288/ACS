@@ -287,7 +287,7 @@ def feedback(request, checklist_id):
             return HttpResponseRedirect('/checklist/')
     else:
         previous_feedback = Feedback.objects.filter(Checklist_id_id=checklist_id)
-        if previous_feedback is not None:
+        if len(previous_feedback) is not 0:
             messages.warning(request, 'You already provided feedback for this checklist')
             return HttpResponseRedirect('/checklist/')
         else:

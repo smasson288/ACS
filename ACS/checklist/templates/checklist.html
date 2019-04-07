@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Checklist</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-sm justify-content-between bg-dark navbar-dark sticky-top">
+        <a class="navbar-brand" href="{% url 'checklist:index' %}">ACS</a>
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="#">Sign Out</a>
+            </li>
+        </ul>
+    </nav>
+    <div class="container">
+    <br/>
+    <h1 class="display-1">{{ user.username }}'s</h1>
+    <h1 class="display-4">Checklist</h1>
+    {% if checklists %}
+        <div class="table-responsive">
+        <table class="table col-sm-12 table-hover">
+        <thead style="text-align: center">
+            <tr>
+                <th>Program</th>
+                <th>Term</th>
+                <th>References</th>
+                <th>Transcript</th>
+                <th>Tests</th>
+                <th>SOP</th>
+                <th>PS</th>
+                <th>Update</th>
+                <th>Feedback</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for checklist in checklists %}
+            <form action="/checklist/" method="post">
+                {% csrf_token %}
+            <tr align="center">
+                <input type="hidden" name="checklist_id" value="{{ checklist.0.Checklist_id }}">
+                <td>{{ checklist.2.School_id.School_name }}
+                    {{ checklist.2.Major }}
+                    {{ checklist.2.Degree }}</td>
+                <td>{{ checklist.0.Term_season }}
+                    {{ checklist.0.Term_Year }}</td>
+                <td>{% if checklist.1.Recommendation_letters %}
+                <input type="checkbox" name="references" id="id_references" {% if checklist.0.Recommendation_letters %} checked {% endif %}></li>
+                {% endif %}</td>
+                <td>{% if checklist.1.Transcript %}
+                <input type="checkbox" name="official_transcript" id="id_official_transcript" {% if checklist.0.Transcript %} checked {% endif %}></li>
+                {% endif %}</td>
+                <td>{% if checklist.1.Tests %}
+                <input type="checkbox" name="tests" id="id_tests" {% if checklist.0.Tests %} checked {% endif %}></li>
+                {% endif %}</td>
+                <td>{% if checklist.1.Statement_of_purpose %}
+                <input type="checkbox" name="statement_of_purpose" id="id_statement_of_purpose" {% if checklist.0.Statement_of_purpose %} checked {% endif %}></li>
+                {% endif %}</td>
+                <td>{% if checklist.1.Personal_statement %}
+                <input type="checkbox" name="personal_statement" id="id_personal_statement" {% if checklist.0.Personal_statement %} checked {% endif %}></li>
+                {% endif %}</td>
+                <td><input class="btn btn-sm btn-outline-secondary" type="submit" value="update"></td>
+                <td><input class="btn btn-sm btn-outline-secondary" type="button" onclick="location.href=' {% url 'checklist:feedback' checklist.0.Checklist_id %}'" value="Provide Feedback"></td>
+            </tr>
+            </form>
+            <br/>
+        {% endfor %}
+        </tbody>
+        </table>
+        </div>
+    {% else %}
+        <p>No checklists were found. Please add programs.</p>
+    {% endif %}
+    <br/>
+    <button class="btn btn-primary" onclick="location.href='{% url 'checklist:search' %}'">search for a new program</button>
+    </div>
+</body>
+</html>

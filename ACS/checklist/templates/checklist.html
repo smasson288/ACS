@@ -24,18 +24,17 @@
     <h1 class="display-4">Checklist</h1>
     {% if checklists %}
         <div class="table-responsive">
-        <table class="table col-sm-12 table-hover">
+        <table class="table table-hover table-condensed">
         <thead style="text-align: center">
             <tr>
-                <th>Program</th>
-                <th>Term</th>
+                <th>Program / Term</th>
                 <th>References</th>
                 <th>Transcript</th>
                 <th>Tests</th>
                 <th>SOP</th>
                 <th>PS</th>
                 <th>Update</th>
-                <th>Feedback</th>
+                <th>Result</th>
             </tr>
         </thead>
         <tbody>
@@ -46,8 +45,8 @@
                 <input type="hidden" name="checklist_id" value="{{ checklist.0.Checklist_id }}">
                 <td>{{ checklist.2.School_id.School_name }}
                     {{ checklist.2.Major }}
-                    {{ checklist.2.Degree }}</td>
-                <td>{{ checklist.0.Term_season }}
+                    {{ checklist.2.Degree }}
+                    {{ checklist.0.Term_season }}
                     {{ checklist.0.Term_Year }}</td>
                 <td>{% if checklist.1.Recommendation_letters %}
                 <input type="checkbox" name="references" id="id_references" {% if checklist.0.Recommendation_letters %} checked {% endif %}></li>
@@ -65,7 +64,7 @@
                 <input type="checkbox" name="personal_statement" id="id_personal_statement" {% if checklist.0.Personal_statement %} checked {% endif %}></li>
                 {% endif %}</td>
                 <td><input class="btn btn-sm btn-outline-secondary" type="submit" value="update"></td>
-                <td><input class="btn btn-sm btn-outline-secondary" type="button" onclick="location.href=' {% url 'checklist:feedback' checklist.0.Checklist_id %}'" value="Provide Feedback"></td>
+                <td><input class="btn btn-sm btn-outline-secondary" type="button" onclick="location.href=' {% url 'checklist:feedback' checklist.0.Checklist_id %}'" value="submit"></td>
             </tr>
             </form>
             <br/>

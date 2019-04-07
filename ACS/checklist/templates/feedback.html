@@ -3,12 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('input').addClass('form-control');
+            $('select').addClass('form-control');
+        })
+    </script>
 </head>
 <body>
-    <form action="/feedback/{{ checklist_id }}" method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="submit">
-    </form>
+    <nav class="navbar navbar-expand-sm justify-content-between bg-dark navbar-dark sticky-top">
+        <a class="navbar-brand" href="{% url 'checklist:index' %}">ACS</a>
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="#">Sign Out</a>
+            </li>
+        </ul>
+    </nav>
+    <div class="container">
+      <div class="row justify-content-center align-items-center text-center">
+        <div class="col-6">
+            <br/><br/>
+            <form action="/feedback/{{ checklist_id }}" method="post">
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+                {% for hidden_field in form.hidden_fields %}
+                    {{ hidden_field.errors }}
+                    {{ hidden_field }}
+                {% endfor %}
+                {% for field in form.visible_fields %}
+                    <div class="form-group">
+                    <label>{{ field.label_tag }}</label>
+                    {{ field.errors }}
+                    {{ field }}
+                    {{ field.help_text }}
+                    </div>
+                {% endfor %}
+                <br/>
+                <input type="submit" value="submit" class="btn btn-primary">
+            </form>
+            {% if messages %}
+                <h5>
+                    {% for message in messages %}
+                        {{ message }}
+                    {% endfor %}
+                </h5>
+            {% endif %}
+            <div style="height: 50px"></div>
+        </div>
+      </div>
+    </div>
 </body>
 </html>

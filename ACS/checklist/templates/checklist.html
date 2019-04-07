@@ -43,11 +43,11 @@
                 {% csrf_token %}
             <tr align="center">
                 <input type="hidden" name="checklist_id" value="{{ checklist.0.Checklist_id }}">
-                <td><a href="#">{{ checklist.2.School_id.School_name }}
+                <td><a href='{% url 'checklist:program' checklist.2.Program_id %}'>{{ checklist.2.School_id.School_name }}
                     {{ checklist.2.Major }}
-                    {{ checklist.2.Degree }}
+                    {{ checklist.2.Degree }}</a>
                     {{ checklist.0.Term_season }}
-                    {{ checklist.0.Term_Year }}</a></td>
+                    {{ checklist.0.Term_Year }}</td>
                 <td>{% if checklist.1.Recommendation_letters %}
                 <input type="checkbox" name="references" id="id_references" {% if checklist.0.Recommendation_letters %} checked {% endif %}></li>
                 {% endif %}</td>

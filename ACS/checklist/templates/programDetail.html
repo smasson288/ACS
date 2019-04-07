@@ -18,7 +18,6 @@
         <h3>Requirements</h3>
         {% for requirement in requirements %}
         <ul>
-            <li>Term Year: {{ requirement.Term_Year}} </li>
             <li>Recommendation letter: {% if requirement.Recommendation_letters %} Required {% else %} Not Required {% endif %}</li>
             <li>Transcript: {% if requirement.Transcript %} Required {% else %} Not Required {% endif %}</li>
             <li>Tests: {% if requirement.Tests %} Required {% else %} Not Required {% endif %}</li>

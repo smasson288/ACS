@@ -64,7 +64,7 @@
                 <input type="checkbox" name="personal_statement" id="id_personal_statement" {% if checklist.0.Personal_statement %} checked {% endif %}></li>
                 {% endif %}</td>
                 <td><input class="btn btn-sm btn-outline-secondary" type="submit" value="update"></td>
-                <td><input class="btn btn-sm btn-outline-secondary" type="button" onclick="location.href=' {% url 'checklist:feedback' checklist.0.Checklist_id %}'" value="submit"></td>
+                <td><input class="btn btn-sm btn-outline-secondary" type="button" onclick="location.href='{% url 'checklist:feedback' checklist.0.Checklist_id %}'" value="submit"></td>
             </tr>
             </form>
             <br/>

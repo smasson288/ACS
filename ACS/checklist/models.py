@@ -103,4 +103,6 @@ class Feedback(models.Model):
     Standardized_Test = models.IntegerField()
     Recommendation = models.CharField(max_length=1000)
     Research = models.CharField(max_length=1000)
+    Publication = models.CharField(max_length=1000)
+    Other_comments = models.CharField(max_length=1000)
 

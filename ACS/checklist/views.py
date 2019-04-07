@@ -135,6 +135,7 @@ def checklist(request):
             checklists = Checklist.objects.filter(Student_id=request.user.username)
             requirements = []
 
+            # requirements = list, requirement_id, program_id
             for list in checklists:
                 requirements.append([list, Requirement.objects.get(Requirement_id=list.Requirement_id.Requirement_id), list.Requirement_id.Program_id])
 
@@ -148,6 +149,7 @@ def checklist(request):
             checklists = Checklist.objects.filter(Student_id=username)
             requirements = []
 
+            # requirements = list, requirement_id, program_id
             for list in checklists:
                 requirements.append([list, Requirement.objects.get(Requirement_id=list.Requirement_id.Requirement_id), list.Requirement_id.Program_id])
 
@@ -201,7 +203,10 @@ def programDetail(request, program_id):
 
     currentProgram = get_object_or_404(Program, pk=program_id)
     requirements = Requirement.objects.filter(Program_id=program_id)
-    context = {'program': currentProgram, 'requirements': requirements, 'university_name':currentProgram.School_id.School_name}
+
+    feedbacks = Feedback.objects.filter(Checklist_id__Requirement_id__Program_id=program_id)
+
+    context = {'program': currentProgram, 'requirements': requirements, 'university_name':currentProgram.School_id.School_name, 'feedbacks': feedbacks}
 
     return render(request, 'programDetail.html', context)
 
@@ -262,6 +267,24 @@ def createProgram(request):
     return render(request, 'createProgram.html', {'form': form})
 
 
-def feedback(request):
-    form = FeedbackForm()
-    return render(request, 'feedback.html', {'form': form})
+def feedback(request, checklist_id):
+    if request.method == 'POST':
+        form = FeedbackForm(request.POST)
+        # create a new program in db
+        if form.is_valid():
+            '''
+            last_feedback = Feedback.objects.first().order_by('Feedback_id').last()
+            if last_feedback is None:
+                feedback_id = 0
+            else:
+                feedback_id = last_feedback.Feedback_id + 1
+            '''
+            feedback = Feedback(Checklist_id=Checklist.objects.get(Checklist_id=checklist_id), Feedback_status=form.cleaned_data['admission_result'], GPA=form.cleaned_data['gpa'],
+                                Standardized_Test=form.cleaned_data['tests'], Recommendation=form.cleaned_data['reference'], Research=form.cleaned_data['research'],
+                                Publication = form.cleaned_data['publication'], Other_comments=form.cleaned_data['other_comment'])
+
+            feedback.save()
+            return HttpResponseRedirect('/checklist/')
+    else:
+        form = FeedbackForm()
+        return render(request, 'feedback.html', {'form': form, 'checklist_id': checklist_id})

@@ -13,5 +13,5 @@ urlpatterns = [
     path('program/', views.program, name='program'),
     path('program/<int:program_id>', views.programDetail, name='detail_program'),
     path('createProgram/', views.createProgram, name='createProgram'),
-    path('feedback/', views.feedback, name='feedback')
+    path('feedback/<int:checklist_id>', views.feedback, name='feedback')
 ]

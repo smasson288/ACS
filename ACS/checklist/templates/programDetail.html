@@ -25,6 +25,20 @@
                 <input type="submit" value="add to checklist">
             </form>
         {% endfor %}
+
+        </br></br>
+        <h3>Feedbacks</h3>
+        {% for feedback in feedbacks %}
+        <ul>
+            <li>Status: {{ feedback.Feedback_status}} </li>
+            <li>GPA: {{ feedback.GPA }}</li>
+            <li>Standarized Test: {{ feedback.Standardized_Test }}</li>
+            <li>Recommendation: </li>
+            <p>{{ feedback.Recommendation }}</p>
+            <li>Research: </li>
+            <p>{{ feedback.Research }}</p>
+        </ul>
+        {% endfor %}
     {% endblock %}
 </body>
 </html>

@@ -1,25 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
     <title>Title</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <style>
-        .Button {
-            padding: 4px;
-            width: 200px;
-        }
-        .Logo{
-            font-size: 720%;
-            font-family: Courier;
+        body,html{
+            height:100%;
         }
     </style>
 </head>
 <body>
-    <div class="Logo">
-        ACS
+    <div class="container h-100">
+      <div class="row h-100 justify-content-center align-items-center text-center">
+        <div class="col-12">
+            <h1 class="display-1">ACS</h1><br/>
+            <button onclick="location.href='{% url 'checklist:login' %}'" type="button" class="btn btn-primary">Login</button>
+            <button onclick="location.href='{% url 'checklist:studentCreateAccount' %}'" type="button" class="btn btn-primary">Student Signup</button><br/><br/>
+            <button onclick="location.href='{% url 'checklist:staffCreateAccount' %}'" type="button" class="btn btn-outline-primary">Institution Signup</button>
+        </div>
+      </div>
     </div>
-    <button onclick="location.href='{% url 'checklist:login' %}'" class="Button"><i> log in </i></button><br/><br/>
-    <button onclick="location.href='{% url 'checklist:studentCreateAccount' %}'" class="Button"><i> student sign up </i></button><br/><br/>
-    <button onclick="location.href='{% url 'checklist:staffCreateAccount' %}'" class="Button"><i> institution sign up </i></button>
 </body>
 </html>

@@ -10,8 +10,8 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <style>
         .vertical-center {
-            min-height: 100%;
-            min-height: 100vh;
+            min-height: 90%;
+            min-height: 90vh;
             display: flex;
             align-items: center;
         }
@@ -37,7 +37,7 @@
     <div class="vertical-center">
     <div class="container">
       <div class="row h-100 justify-content-center align-items-center text-center">
-        <div class="col-4">
+        <div class="col-6">
             <form action="/login/" method="post">
                 {% csrf_token %}
                 {{ form.non_field_errors }}

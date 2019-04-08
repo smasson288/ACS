@@ -51,6 +51,7 @@
                     <table class="table table-sm table-striped">
                         <thead>
                             <tr>
+                                <th scope="col">Term</th>
                                 <th scope="col">Status</th>
                                 <th scope="col">GPA</th>
                                 <th scope="col">Standardized Test</th>
@@ -58,6 +59,7 @@
                         </thead>
                         <tbody>
                             <tr>
+                                <td>{{ feedback.Checklist_id.Term_season}} {{ feedback.Checklist_id.Term_Year}}</td>
                                 <td>{{ feedback.Feedback_status}}</td>
                                 <td>{{ feedback.GPA }}</td>
                                 <td>{{ feedback.Standardized_Test }}</td>
@@ -66,12 +68,20 @@
                     </table>
                     <table table class="table">
                         <tr>
-                            <td style="width: 15%">Recommendation</td>
-                            <td style="width: 85%">{{ feedback.Recommendation }}</td>
+                            <td style="width: 20%"><b>Recommendation</b></td>
+                            <td style="width: 80%">{{ feedback.Recommendation }}</td>
                         </tr>
                         <tr>
-                            <td style="width: 15%">Research</td>
-                            <td style="width: 85%">{{ feedback.Research }}</td>
+                            <td style="width: 20%"><b>Research Experience</b></td>
+                            <td style="width: 80%">{{ feedback.Research }}</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 20%"><b>Publication</b></td>
+                            <td style="width: 80%">{{ feedback.Publication }}</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 20%"><b>Additional Comments</b></td>
+                            <td style="width: 80%">{{ feedback.Other_comments }}</td>
                         </tr>
                     </table>
                 {% endfor %}

@@ -77,6 +77,14 @@
     {% endif %}
     <br/>
     <button class="btn btn-primary" onclick="location.href='{% url 'checklist:search' %}'">search for a new program</button>
+    {% if messages %}
+         <br/><br/>
+         <h5>
+             {% for message in messages %}
+                 {{ message }}
+             {% endfor %}
+         </h5>
+    {% endif %}
     </div>
 </body>
 </html>

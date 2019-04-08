@@ -17,17 +17,19 @@
         }
     </style>
 </head>
-<body>
+<body class="bg-dark">
     <div class="vertical-center">
         <div class="container">
-          <div class="row h-100 justify-content-center align-items-center text-center">
-            <div class="col-12">
-                <h1 class="display-1">ACS</h1><br/>
-                <button onclick="location.href='{% url 'checklist:login' %}'" type="button" class="btn btn-primary">Login</button>
-                <button onclick="location.href='{% url 'checklist:studentCreateAccount' %}'" type="button" class="btn btn-primary">Student Signup</button><br/><br/>
-                <button onclick="location.href='{% url 'checklist:staffCreateAccount' %}'" type="button" class="btn btn-outline-primary">Institution Signup</button>
+            <div class="row h-100 justify-content-center align-items-center text-center">
+                <div class="col-12">
+                    {% load static %}
+                    <img src="{% static 'logo.png' %}" width="200" height="85" alt=""><br/><br/>
+                    <div class="lead" style="color: azure">Application Checklist and Statistics</div><br/><br/>
+                    <button onclick="location.href='{% url 'checklist:login' %}'" type="button" class="btn btn-light">Login</button>
+                    <button onclick="location.href='{% url 'checklist:studentCreateAccount' %}'" type="button" class="btn btn-light">Student Signup</button><br/><br/>
+                    <button onclick="location.href='{% url 'checklist:staffCreateAccount' %}'" type="button" class="btn btn-outline-light">Institution Signup</button>
+                </div>
             </div>
-          </div>
         </div>
     </div>
 </body>

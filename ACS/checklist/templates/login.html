@@ -24,7 +24,10 @@
 </head>
 <body>
     <nav class="navbar navbar-expand-sm justify-content-between bg-dark navbar-dark sticky-top">
-        <a class="navbar-brand" href="{% url 'checklist:index' %}">ACS</a>
+        <a class="navbar-brand" href="{% url 'checklist:index' %}">
+            {% load static %}
+            <img src="{% static 'logo.png' %}" width="70" height="30" alt="">
+        </a>
         <ul class="navbar-nav">
             <li class="nav-item">
                 <a class="nav-link" href="#">Sign Out</a>
@@ -52,7 +55,7 @@
                     </div>
                 {% endfor %}
                 <br/>
-                <input type="submit" value="login" class="btn btn-primary">
+                <input type="submit" value="login" class="btn btn-dark">
             </form>
             {% if messages %}
                 <h5>

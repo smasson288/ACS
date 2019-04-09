@@ -12,6 +12,7 @@ urlpatterns = [
     path('search/', views.search, name='search'),
     path('program/', views.program, name='program'),
     path('program/<int:program_id>', views.programDetail, name='detail_program'),
+    path('addToChecklist/<int:requirement_id>', views.programDetail, name='addToChecklist'),
     path('createProgram/', views.createProgram, name='createProgram'),
     path('feedback/<int:checklist_id>', views.feedback, name='feedback')
 ]

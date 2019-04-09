@@ -32,46 +32,80 @@
                 <h1 class="display-4" style="font-size: 4vw">{{ program.College }}</h1>
                 <h1 class="display-4" style="font-size: 4vw">{{ program.Degree }} {{ program.Major }}</h1><br/>
                 <div class="dropright">
-                    <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                        add to checklist
+                    <button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        create a new requirement
                     </button>
                 <div class="dropdown-menu">
-                    <div class="px-3"> newest certified</div>
-                    <a class="dropdown-item" href="#">???</a>
-                    <div class="dropdown-divider"></div>
-                    <div class="px-3">newest created by student</div>
-                    <a class="dropdown-item" href="#">???</a>
-                    <div class="dropdown-divider"></div>
-                    <form class="px-3">
-                        create yourself
-                        <br/><br/>
+                    <form method="post" class="px-3">
+                        {% csrf_token %}
+                        {{ form.non_field_errors }}
+                        {% for hidden_field in form.hidden_fields %}
+                            {{ hidden_field.errors }}
+                            {{ hidden_field }}
+                        {% endfor %}
+                        {% for field in form.visible_fields %}
+                            <div class="form-group">
+                            <label>{{ field.label_tag }}</label>
+                            {{ field.errors }}
+                            {{ field }}
+                            {{ field.help_text }}
+                            </div>
+                        {% endfor %}
                         <input type="submit" class="btn btn-outline-secondary" value="create and add to checklist">
                     </form>
                 </div>
                 </div>
-                <form method="post">
-                    {% csrf_token %}
-                    <input type="submit" class="btn btn-outline-secondary" value="add to checklist">
-                </form>
             </div>
             <div class="col-6">
                 <h1 class="display-4" style="font-size: 4vw">Requirements</h1>
+                <div id="accordion">
                 {% if certified %}
-                    <ul class="list-group">
-                        <li class="list-group-item {% if not certified.Recommendation_letters %} disabled {% endif %}">Letter of Recommendation: {% if certified.Recommendation_letters %} Required {% else %} Not Required {% endif %}</li>
-                        <li class="list-group-item {% if not certified.Transcript %} disabled {% endif %}">Transcript: {% if certified.Transcript %} Required {% else %} Not Required {% endif %}</li>
-                        <li class="list-group-item {% if not certified.Tests %} disabled {% endif %}">Tests: {% if certified.Tests %} Required {% else %} Not Required {% endif %}</li>
-                        <li class="list-group-item {% if not certified.Statement_of_purpose %} disabled {% endif %}">Statement of Purpose: {% if certified.Statement_of_purpose %} Required {% else %} Not Required {% endif %}</li>
-                        <li class="list-group-item {% if not certified.Personal_statement %} disabled {% endif %}">Personal Statement: {% if certified.Personal_statement %} Required {% else %} Not Required {% endif %}</li>
-                    </ul>
-                {% else %}
-                        <ul class="list-group">
-                            <li class="list-group-item {% if not latest.Recommendation_letters %} disabled {% endif %}">Letter of Recommendation: {% if latest.Recommendation_letters %} Required {% else %} Not Required {% endif %}</li>
-                            <li class="list-group-item {% if not latest.Transcript %} disabled {% endif %}">Transcript: {% if latest.Transcript %} Required {% else %} Not Required {% endif %}</li>
-                            <li class="list-group-item {% if not latest.Tests %} disabled {% endif %}">Tests: {% if latest.Tests %} Required {% else %} Not Required {% endif %}</li>
-                            <li class="list-group-item {% if not latest.Statement_of_purpose %} disabled {% endif %}">Statement of Purpose: {% if latest.Statement_of_purpose %} Required {% else %} Not Required {% endif %}</li>
-                            <li class="list-group-item {% if not latest.Personal_statement %} disabled {% endif %}">Personal Statement: {% if latest.Personal_statement %} Required {% else %} Not Required {% endif %}</li>
-                        </ul>
+                    <div class="card">
+                        <div class="card-header" id="headingOne">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    Latest Certified Requirement
+                                </button>
+                            </h5>
+                        </div>
+                        <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+                            <div class="card-body">
+                                <ul class="list-group">
+                                    <li class="list-group-item">{{ certified.Term_season }} {{ certified.Term_year }}</li>
+                                    <li class="list-group-item {% if not certified.Recommendation_letters %} disabled {% endif %}">Letter of Recommendation: {% if certified.Recommendation_letters %} Required {% else %} Not Required {% endif %}</li>
+                                    <li class="list-group-item {% if not certified.Transcript %} disabled {% endif %}">Transcript: {% if certified.Transcript %} Required {% else %} Not Required {% endif %}</li>
+                                    <li class="list-group-item {% if not certified.Tests %} disabled {% endif %}">Tests: {% if certified.Tests %} Required {% else %} Not Required {% endif %}</li>
+                                    <li class="list-group-item {% if not certified.Statement_of_purpose %} disabled {% endif %}">Statement of Purpose: {% if certified.Statement_of_purpose %} Required {% else %} Not Required {% endif %}</li>
+                                    <li class="list-group-item {% if not certified.Personal_statement %} disabled {% endif %}">Personal Statement: {% if certified.Personal_statement %} Required {% else %} Not Required {% endif %}</li>
+                                </ul>
+                                <a class="btn btn-secondary" href="{% url 'checklist:addToChecklist' certified.Requirement_id %}" role="button">add this requirement to checklist</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+                {% if latest %}
+                    <div class="card">
+                        <div class="card-header" id="headingOne">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    Latest Requirement
+                                </button>
+                            </h5>
+                        </div>
+                        <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+                            <div class="card-body">
+                                <ul class="list-group">
+                                    <li class="list-group-item">{{ latest.Term_season }} {{ latest.Term_year }}</li>
+                                    <li class="list-group-item {% if not latest.Recommendation_letters %} disabled {% endif %}">Letter of Recommendation: {% if latest.Recommendation_letters %} Required {% else %} Not Required {% endif %}</li>
+                                    <li class="list-group-item {% if not latest.Transcript %} disabled {% endif %}">Transcript: {% if latest.Transcript %} Required {% else %} Not Required {% endif %}</li>
+                                    <li class="list-group-item {% if not latest.Tests %} disabled {% endif %}">Tests: {% if latest.Tests %} Required {% else %} Not Required {% endif %}</li>
+                                    <li class="list-group-item {% if not latest.Statement_of_purpose %} disabled {% endif %}">Statement of Purpose: {% if latest.Statement_of_purpose %} Required {% else %} Not Required {% endif %}</li>
+                                    <li class="list-group-item {% if not latest.Personal_statement %} disabled {% endif %}">Personal Statement: {% if latest.Personal_statement %} Required {% else %} Not Required {% endif %}</li>
+                                </ul>
+                                <a class="btn btn-secondary" href="{% url 'checklist:addToChecklist' latest.Requirement_id %}" role="button">add this requirement to checklist</a>
+                            </div>
+                        </div>
+                    </div>
                 {% endif %}
             </div>
         </div>

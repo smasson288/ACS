@@ -123,6 +123,11 @@ def staffCreateAccount(request):
         form = InstitutionSignUpForm()
     return render(request, 'staffCreateAccount.html', {'form': form})
 
+
+def addToChecklist(request, requirement_id):
+    return
+
+
 @csrf_protect
 def checklist(request):
     if request.method == 'POST':

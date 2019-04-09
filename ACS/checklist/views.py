@@ -108,7 +108,9 @@ def staffCreateAccount(request):
                     school_id = last_school.School_id + 1
                 else:
                     school_id = 0
-                school = School(School_id=school_id, School_name=school_name)
+                school = School(School_id=school_id, School_name=school_name, Address_street=form.cleaned_data['address_street'],
+                                Address_city=form.cleaned_data['address_city'], Address_state=form.cleaned_data['address_state'],
+                                Address_zipcode=form.cleaned_data['zipcode'])
                 school.save()
 
             user = User.objects.create_user(username, password)
@@ -125,7 +127,33 @@ def staffCreateAccount(request):
 
 
 def addToChecklist(request, requirement_id):
-    return
+    user = request.user
+    if not user.is_anonymous:
+        try:
+            if not user.is_authenticated:
+                return HttpResponseRedirect('/')
+            elif user.school_id != -1:
+                return HttpResponseRedirect('/staff/')
+        except ObjectDoesNotExist:
+            return HttpResponseRedirect('/')
+    else:
+        return HttpResponseRedirect('/login/0')
+
+    requirement = Requirement.objects.get(Requirement_id=requirement_id)
+    checklist = Checklist.objects.filter(Student_id=request.user, Requirement_id__Program_id=requirement.Program_id)
+
+    if len(checklist) is 0:
+        last_checklist = Checklist.objects.filter().last()
+        if last_checklist is None:
+            checklist_id = 0
+        else:
+            checklist_id = last_checklist.Checklist_id + 1
+
+        checklist = Checklist(checklist_id, requirement_id, request.user, requirement.Term_season,
+                              requirement.Term_year, False, False, False, False, False)
+        checklist.save()
+
+    return HttpResponseRedirect('/checklist/')
 
 
 @csrf_protect
@@ -205,7 +233,7 @@ def search(request):
     return render(request, 'search.html', {'form': form})
 
 @csrf_protect
-def program(request):
+def staff(request):
     user = request.user
     if not user.is_anonymous:
         try:
@@ -221,7 +249,7 @@ def program(request):
     user = User.objects.get(username=user.username)
     requirements = Requirement.objects.filter(Created_by=user)
 
-    return render(request, 'staff.html', {'school_id': School.objects.get(School_id=user.school_id), 'requirements': requirements})
+    return render(request, 'staff.html', {'school': School.objects.get(School_id=user.school_id), 'Requirements': requirements})
 
 
 @csrf_protect
@@ -232,6 +260,8 @@ def programDetail(request, program_id):
             try:
                 if not user.is_authenticated:
                     return HttpResponseRedirect('/')
+                elif user.school_id != -1:
+                    return HttpResponseRedirect('/staff/')
             except ObjectDoesNotExist:
                 return HttpResponseRedirect('/')
         else:
@@ -264,7 +294,7 @@ def programDetail(request, program_id):
     latest = Requirement.objects.filter(Program_id=currentProgram).latest('Requirement_id')
 
     context = {'program': currentProgram, 'certified': certified,'latest': latest,
-               'form': RequirementCreateForm(),'university_name':currentProgram.School_id.School_name, 'feedbacks': feedbacks}
+               'form': RequirementCreateForm(),'university':currentProgram.School_id, 'feedbacks': feedbacks}
 
     return render(request, 'programDetail.html', context)
 
@@ -282,46 +312,56 @@ def createProgram(request):
         return HttpResponseRedirect('/login/0')
 
     if request.method == 'POST':
-        form = ProgramCreateForm(request.POST)
-        if form.is_valid():
-            #create a new program in db
+        last_program = Program.objects.filter().order_by('Program_id').last()
+        if last_program is None:
+            program_id = 0
+        else:
+            program_id = last_program.Program_id + 1
 
-            last_program = Program.objects.filter().order_by('Program_id').last()
-            if last_program is None:
-                program_id = 0
-            else:
-                program_id = last_program.Program_id + 1
+        if user.school_id == -1:
+            form = ProgramCreateForm(request.POST)
+            if form.is_valid():
+                #create a new program in db
 
-            university_name = form.cleaned_data['university_name']
-            try:
-                school = School.objects.get(School_name=university_name)
-                school_id = school.School_id
-            except School.DoesNotExist:
-                last_school = School.objects.filter().order_by('School_id').last()
-                if last_school is not None:
-                    school_id = last_school.School_id + 1
-                else:
-                    school_id = 0
-                school = School(School_id=school_id, School_name=university_name)
-                school.save()
+                university_name = form.cleaned_data['university_name']
+                try:
+                    school = School.objects.get(School_name=university_name)
+                    school_id = school.School_id
+                except School.DoesNotExist:
+                    last_school = School.objects.filter().order_by('School_id').last()
+                    if last_school is not None:
+                        school_id = last_school.School_id + 1
+                    else:
+                        school_id = 0
+                    school = School(School_id=school_id, School_name=university_name)
+                    school.save()
 
+                program = Program(Program_id=program_id, Major=form.cleaned_data['major'], Degree=form.cleaned_data['degree_type'], School_id_id=school_id)
+                program.save()
+        else:
+            form = StaffCreateProgramForm(request.POST)
+            if form.is_valid():
+                program = Program(Program_id=program_id, Major=form.cleaned_data['major'],
+                                  Degree=form.cleaned_data['degree_type'], School_id_id=user.school_id)
+                program.save()
 
-            program = Program(Program_id=program_id, Major=form.cleaned_data['major'], Degree=form.cleaned_data['degree_type'], School_id_id=school_id)
-            program.save()
+        last_requirement = Requirement.objects.filter().order_by('Requirement_id').last()
+        if last_requirement is not None:
+            req_id = last_requirement.Requirement_id + 1
+        else:
+            req_id = 0
 
-            last_requirement = Requirement.objects.filter().order_by('Requirement_id').last()
-            if last_requirement is not None:
-                req_id = last_requirement.Requirement_id + 1
-            else:
-                req_id = 0
+        requirement = Requirement(Requirement_id=req_id, Program_id=program, Created_by=User.objects.get(username=user.username),Term_season=form.cleaned_data['term'], Term_year=form.cleaned_data['year'], Recommendation_letters=form.cleaned_data['references'], Transcript=form.cleaned_data['official_transcript'],
+                                  Tests=form.cleaned_data['tests'], Statement_of_purpose=form.cleaned_data['statement_of_purpose'], Personal_statement=form.cleaned_data['personal_statement'])
+        requirement.save()
 
-            requirement = Requirement(Requirement_id=req_id, Program_id=program, Created_by=User.objects.get(username=user.username),Term_season=form.cleaned_data['term'], Term_year=form.cleaned_data['year'], Recommendation_letters=form.cleaned_data['references'], Transcript=form.cleaned_data['official_transcript'],
-                                      Tests=form.cleaned_data['tests'], Statement_of_purpose=form.cleaned_data['statement_of_purpose'], Personal_statement=form.cleaned_data['personal_statement'])
-            requirement.save()
+        return HttpResponseRedirect('/checklist/')
 
-            return HttpResponseRedirect('/checklist/')
+    if user.school_id == -1:
+        form = ProgramCreateForm()
+    else:
+        form = StaffCreateProgramForm()
 
-    form = ProgramCreateForm()
     return render(request, 'createProgram.html', {'form': form})
 
 @csrf_protect

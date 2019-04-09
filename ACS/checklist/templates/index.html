@@ -25,9 +25,13 @@
                     {% load static %}
                     <img src="{% static 'logo.png' %}" width="200" height="85" alt=""><br/><br/>
                     <div class="lead" style="color: azure">Application Checklist and Statistics</div><br/><br/>
-                    <button onclick="location.href='{% url 'checklist:login' 0 %}'" type="button" class="btn btn-light">Login</button>
-                    <button onclick="location.href='{% url 'checklist:studentCreateAccount' %}'" type="button" class="btn btn-light">Student Signup</button><br/><br/>
-                    <button onclick="location.href='{% url 'checklist:staffCreateAccount' %}'" type="button" class="btn btn-outline-light">Institution Signup</button>
+                    {% if anonymous == False %}
+                        <button onclick="location.href='{% url 'checklist:checklist' %}'" type="button" class="btn btn-light">{{ user.username }}</button>
+                    {% else %}
+                        <button onclick="location.href='{% url 'checklist:login' 0 %}'" type="button" class="btn btn-light">Login</button>
+                        <button onclick="location.href='{% url 'checklist:studentCreateAccount' %}'" type="button" class="btn btn-light">Student Signup</button><br/><br/>
+                        <button onclick="location.href='{% url 'checklist:staffCreateAccount' %}'" type="button" class="btn btn-outline-light">Institution Signup</button>
+                    {% endif %}
                 </div>
             </div>
         </div>

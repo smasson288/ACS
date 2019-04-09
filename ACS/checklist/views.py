@@ -9,7 +9,11 @@ from .models import *
 
 
 def index(request):
-    return render(request, 'index.html')
+    user = request.user
+    if not user.is_anonymous:
+        return render(request, 'index.html', {'anonymous': False,})
+    else:
+        return render(request, 'index.html', {'anonymous': True,})
 
 @csrf_protect
 def accLogin(request, logout_request):
@@ -18,6 +22,7 @@ def accLogin(request, logout_request):
         if form.is_valid():
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
+
             #try to log user in
             try:
                 user = User.objects.get(username=username)
@@ -38,7 +43,7 @@ def accLogin(request, logout_request):
             if user_model.school_id == -1:
                 return HttpResponseRedirect('/checklist/')
             else:
-                return HttpResponseRedirect('/program/')
+                return HttpResponseRedirect('/staff/')
     else:
         # logout request 1 = true, 0 = false
         if logout_request == 1:
@@ -56,7 +61,6 @@ def studentCreateAccount(request):
             reenter = form.cleaned_data['password_reenter']
 
             username_count = len(User.objects.filter(username=username))
-            #username_count = len(Student.objects.filter(username=username))
             if username_count != 0:
                 messages.warning(request, 'username is already taken')
                 return render(request, 'studentCreateAccount.html', {'form': form})
@@ -66,11 +70,13 @@ def studentCreateAccount(request):
                 return render(request, 'studentCreateAccount.html', {'form': form})
 
             user = User.objects.create_user(username, password)
-            #user = Student.objects.create_user(username, password)
             user.save()
 
             return HttpResponseRedirect('/login/0')
     else:
+        user = request.user
+        if not user.is_anonymous:
+            return HttpResponseRedirect('/')
         form = StudentSignUpForm()
     return render(request, 'studentCreateAccount.html', {'form': form})
 
@@ -85,7 +91,6 @@ def staffCreateAccount(request):
             school_name = form.cleaned_data['institution_name']
 
             username_count = len(User.objects.filter(username=username))
-            #username_count = len(Staff.objects.filter(username=username))
             if username_count != 0:
                 messages.warning(request, 'username is already taken')
                 return render(request, 'staffCreateAccount.html', {'form': form})
@@ -106,13 +111,15 @@ def staffCreateAccount(request):
                 school = School(School_id=school_id, School_name=school_name)
                 school.save()
 
-            #user = Staff.objects.create_user(username, password, school_id)
             user = User.objects.create_user(username, password)
             user.school_id = school_id
             user.save()
 
             return HttpResponseRedirect('/login/0')
     else:
+        user = request.user
+        if not user.is_anonymous:
+            return HttpResponseRedirect('/')
         form = InstitutionSignUpForm()
     return render(request, 'staffCreateAccount.html', {'form': form})
 
@@ -144,9 +151,9 @@ def checklist(request):
         if not user.is_anonymous:
             try:
                 if not user.is_authenticated:
-                    return HttpResponseRedirect('/index/')
+                    return HttpResponseRedirect('/')
             except ObjectDoesNotExist:
-                return HttpResponseRedirect('/index/')
+                return HttpResponseRedirect('/')
         else:
             return HttpResponseRedirect('/login/0')
 
@@ -167,7 +174,7 @@ def checklist(request):
 
         #if staff, redirect to staff program page
         else:
-            return HttpResponseRedirect('/program/')
+            return HttpResponseRedirect('/staff/')
 
 @csrf_protect
 def search(request):
@@ -198,17 +205,18 @@ def program(request):
     if not user.is_anonymous:
         try:
             if not user.is_authenticated:
-                return HttpResponseRedirect('/index/')
+                return HttpResponseRedirect('/')
             elif user.school_id == -1:
-                return HttpResponseRedirect('/index/')
+                return HttpResponseRedirect('/')
         except ObjectDoesNotExist:
-            return HttpResponseRedirect('/index/')
+            return HttpResponseRedirect('/')
     else:
         return HttpResponseRedirect('/login/0')
 
+    user = User.objects.get(username=user.username)
+    requirements = Requirement.objects.filter(Created_by=user)
 
-
-    return render(request, 'program.html')
+    return render(request, 'staff.html', {'school_id': School.objects.get(School_id=user.school_id), 'requirements': requirements})
 
 
 @csrf_protect
@@ -218,9 +226,9 @@ def programDetail(request, program_id):
         if not user.is_anonymous:
             try:
                 if not user.is_authenticated:
-                    return HttpResponseRedirect('/index/')
+                    return HttpResponseRedirect('/')
             except ObjectDoesNotExist:
-                return HttpResponseRedirect('/index/')
+                return HttpResponseRedirect('/')
         else:
             return HttpResponseRedirect('/login/0')
 
@@ -297,7 +305,7 @@ def createProgram(request):
             else:
                 req_id = 0
 
-            requirement = Requirement(Requirement_id=req_id, Program_id=program,Term_season="Fall", Term_year=2019, Recommendation_letters=form.cleaned_data['references'], Transcript=form.cleaned_data['official_transcript'],
+            requirement = Requirement(Requirement_id=req_id, Program_id=program, Created_by=User.objects.get(username=user.username),Term_season=form.cleaned_data['term'], Term_year=form.cleaned_data['year'], Recommendation_letters=form.cleaned_data['references'], Transcript=form.cleaned_data['official_transcript'],
                                       Tests=form.cleaned_data['tests'], Statement_of_purpose=form.cleaned_data['statement_of_purpose'], Personal_statement=form.cleaned_data['personal_statement'])
             requirement.save()
 
@@ -312,14 +320,8 @@ def feedback(request, checklist_id):
         form = FeedbackForm(request.POST)
         # create a new program in db
         if form.is_valid():
-            '''
-            last_feedback = Feedback.objects.first().order_by('Feedback_id').last()
-            if last_feedback is None:
-                feedback_id = 0
-            else:
-                feedback_id = last_feedback.Feedback_id + 1
-            '''
-            feedback = Feedback(Checklist_id=Checklist.objects.get(Checklist_id=checklist_id), Feedback_status=form.cleaned_data['admission_result'], GPA=form.cleaned_data['gpa'],
+
+            feedback = Feedback(Checklist_id=Checklist.objects.get(Checklist_id=checklist_id), Feedback_status=form.cleaned_data['admission_result'], Former_school=form.cleaned_data['school_name'], GPA=form.cleaned_data['gpa'],
                                 Standardized_Test=form.cleaned_data['tests'], Recommendation=form.cleaned_data['reference'], Research=form.cleaned_data['research'],
                                 Publication = form.cleaned_data['publication'], Other_comments=form.cleaned_data['other_comment'])
 
@@ -330,16 +332,20 @@ def feedback(request, checklist_id):
         if not user.is_anonymous:
             try:
                 if not user.is_authenticated:
-                    return HttpResponseRedirect('/index/')
+                    return HttpResponseRedirect('/')
                 elif user.school_id == 1:
-                    return HttpResponseRedirect('/index/')
+                    return HttpResponseRedirect('/')
             except ObjectDoesNotExist:
-                return HttpResponseRedirect('/index/')
+                return HttpResponseRedirect('/')
         else:
             return HttpResponseRedirect('/login/0')
 
         previous_feedback = Feedback.objects.filter(Checklist_id_id=checklist_id)
-        if len(previous_feedback) is not 0:
+        checklist = Checklist.objects.filter(checklist_id=checklist_id)
+        if checklist.Student_id_username != user.username:
+            messages.warning(request, 'You can only provide feedback on your own checklist')
+            return HttpResponseRedirect('/checklist/')
+        elif len(previous_feedback) is not 0:
             messages.warning(request, 'You already provided feedback for this checklist')
             return HttpResponseRedirect('/checklist/')
         else:

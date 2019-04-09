@@ -1,5 +1,5 @@
 from django import forms
-from . import models
+
 
 class SignInForm(forms.Form):
     username = forms.CharField(label='Username', max_length=100)
@@ -14,6 +14,10 @@ class StudentSignUpForm(forms.Form):
 
 class InstitutionSignUpForm(forms.Form):
     institution_name = forms.CharField(label='Institution Name', max_length=100)
+    address_street = forms.CharField(label='Street Address', max_length=100)
+    address_city = forms.CharField(label='City', max_length=100)
+    address_state = forms.CharField(label='State', max_length=100)
+    zipcode = forms.CharField(label='Zip Code', max_length=100)
     username = forms.CharField(label='Username', max_length=100)
     password = forms.CharField(label='Password', max_length=100, widget=forms.PasswordInput)
     password_reenter = forms.CharField(label='Re-enter Password', max_length=100, widget=forms.PasswordInput)
@@ -27,6 +31,18 @@ class ProgramSearchForm(forms.Form):
 
 class ProgramCreateForm(forms.Form):
     university_name = forms.CharField(label='University Name', max_length=100)
+    degree_type = forms.CharField(label='Degree Type', max_length=100)
+    major = forms.CharField(label='Major', max_length=100)
+    term = forms.CharField(label='Term', max_length=100)
+    year = forms.IntegerField(label='Year')
+    tests = forms.BooleanField(label='Standardized Test', required=False)
+    statement_of_purpose = forms.BooleanField(label='Statement of Purpose', required=False)
+    personal_statement = forms.BooleanField(label='Personal Statement', required=False)
+    references = forms.BooleanField(label='References', required=False)
+    official_transcript = forms.BooleanField(label='Official Transcript', required=False)
+
+
+class StaffCreateProgramForm(forms.Form):
     degree_type = forms.CharField(label='Degree Type', max_length=100)
     major = forms.CharField(label='Major', max_length=100)
     term = forms.CharField(label='Term', max_length=100)

@@ -38,6 +38,15 @@ class ProgramCreateForm(forms.Form):
     official_transcript = forms.BooleanField(label='Official Transcript', required=False)
 
 
+class RequirementCreateForm(forms.Form):
+    term = forms.CharField(label='Term', max_length=100)
+    year = forms.IntegerField(label='Year')
+    tests = forms.BooleanField(label='Standardized Test', required=False)
+    statement_of_purpose = forms.BooleanField(label='Statement of Purpose', required=False)
+    personal_statement = forms.BooleanField(label='Personal Statement', required=False)
+    references = forms.BooleanField(label='References', required=False)
+    official_transcript = forms.BooleanField(label='Official Transcript', required=False)
+
 class FeedbackForm(forms.Form):
     school_name = forms.CharField(label='Former Institution Name', max_length=100)
     gpa = forms.FloatField(label='GPA')

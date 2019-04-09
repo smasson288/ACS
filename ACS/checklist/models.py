@@ -98,6 +98,7 @@ class Feedback(models.Model):
         ("WAITLISTED", "Waitlisted"),
         ("DENIED", 'Denied'),
     )
+    Former_school = models.CharField(max_length=1000)
     Feedback_status = models.CharField(max_length=1, choices=STATUS_CHOICES)
     GPA = models.FloatField()
     Standardized_Test = models.IntegerField()

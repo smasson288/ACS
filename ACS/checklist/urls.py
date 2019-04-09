@@ -5,7 +5,7 @@ from . import views
 app_name = 'checklist'
 urlpatterns = [
     path('', views.index, name='index'),
-    path('login/', views.accLogin, name='login'),
+    path('login/<int:logout_request>', views.accLogin, name='login'),
     path('studentCreateAccount/', views.studentCreateAccount, name='studentCreateAccount'),
     path('staffCreateAccount/', views.staffCreateAccount, name='staffCreateAccount'),
     path('checklist/', views.checklist, name='checklist'),

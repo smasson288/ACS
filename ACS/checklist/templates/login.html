@@ -33,7 +33,7 @@
                 <a class="nav-link" href="/search/">Search</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Sign Out</a>
+                <a class="nav-link" href='{% url 'checklist:login' 1 %}'>Sign Out</a>
             </li>
         </ul>
     </nav>
@@ -41,7 +41,7 @@
     <div class="container">
       <div class="row h-100 justify-content-center align-items-center text-center">
         <div class="col-6">
-            <form action="/login/" method="post">
+            <form action="/login/0" method="post">
                 {% csrf_token %}
                 {{ form.non_field_errors }}
                 {% for hidden_field in form.hidden_fields %}

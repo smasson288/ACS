@@ -11,9 +11,8 @@ from .models import *
 def index(request):
     return render(request, 'index.html')
 
-
 @csrf_protect
-def accLogin(request):
+def accLogin(request, logout_request):
     if request.method == 'POST':
         form = SignInForm(request.POST)
         if form.is_valid():
@@ -25,16 +24,7 @@ def accLogin(request):
             except ObjectDoesNotExist:
                 messages.warning(request, 'username does not exist')
                 return render(request, 'login.html', {'form': form})
-            '''
-            try:
-                user = Staff.objects.get(username=username)
-            except ObjectDoesNotExist:
-                try:
-                    user = Student.objects.get(username=username)
-                except ObjectDoesNotExist:
-                    messages.warning(request, 'username does not exist')
-                    return render(request, 'login.html', {'form': form})
-            '''
+
             if not check_password(password, user.password):
                 messages.warning(request, 'incorrect password, please try again')
                 return render(request, 'login.html', {'form': form})
@@ -50,10 +40,13 @@ def accLogin(request):
             else:
                 return HttpResponseRedirect('/program/')
     else:
+        # logout request 1 = true, 0 = false
+        if logout_request == 1:
+            logout(request)
         form = SignInForm()
     return render(request, 'login.html', {'form': form})
 
-
+@csrf_protect
 def studentCreateAccount(request):
     if request.method == 'POST':
         form = StudentSignUpForm(request.POST)
@@ -76,12 +69,12 @@ def studentCreateAccount(request):
             #user = Student.objects.create_user(username, password)
             user.save()
 
-            return HttpResponseRedirect('/login/')
+            return HttpResponseRedirect('/login/0')
     else:
         form = StudentSignUpForm()
     return render(request, 'studentCreateAccount.html', {'form': form})
 
-
+@csrf_protect
 def staffCreateAccount(request):
     if request.method == 'POST':
         form = InstitutionSignUpForm(request.POST)
@@ -118,7 +111,7 @@ def staffCreateAccount(request):
             user.school_id = school_id
             user.save()
 
-            return HttpResponseRedirect('/login/')
+            return HttpResponseRedirect('/login/0')
     else:
         form = InstitutionSignUpForm()
     return render(request, 'staffCreateAccount.html', {'form': form})
@@ -145,31 +138,38 @@ def checklist(request):
                 requirements.append([list, Requirement.objects.get(Requirement_id=list.Requirement_id.Requirement_id), list.Requirement_id.Program_id])
 
             return render(request, 'checklist.html', {'user': request.user, 'checklists': requirements})
-        return HttpResponseRedirect('/login/')
+        return HttpResponseRedirect('/login/0')
     else:
-        if request.user.is_authenticated:
-            username = request.user.username
-            #user_model = get_object_or_404(Student, pk=username)
-            user_model = get_object_or_404(User, pk=username)
-
-            #if staff, redirect to login page
-            if user_model.school_id == -1:
-                checklists = Checklist.objects.filter(Student_id=username)
-                requirements = []
-
-                # requirements = list, requirement_id, program_id
-                for list in checklists:
-                    requirements.append([list, Requirement.objects.get(Requirement_id=list.Requirement_id.Requirement_id), list.Requirement_id.Program_id])
-
-                return render(request, 'checklist.html', {'user': user_model, 'checklists': requirements})
-
-            #if staff, redirect to login
-            else:
-                return HttpResponseRedirect('/program/')
+        user = request.user
+        if not user.is_anonymous:
+            try:
+                if not user.is_authenticated:
+                    return HttpResponseRedirect('/index/')
+            except ObjectDoesNotExist:
+                return HttpResponseRedirect('/index/')
         else:
-            return HttpResponseRedirect('/login/')
+            return HttpResponseRedirect('/login/0')
 
+        # at this point verified that user is authenticated
+        username = request.user.username
+        user_model = get_object_or_404(User, pk=username)
 
+        #if student
+        if user_model.school_id == -1:
+            checklists = Checklist.objects.filter(Student_id=username)
+            requirements = []
+
+            # requirements = list, requirement_id, program_id
+            for list in checklists:
+                requirements.append([list, Requirement.objects.get(Requirement_id=list.Requirement_id.Requirement_id), list.Requirement_id.Program_id])
+
+            return render(request, 'checklist.html', {'user': user_model, 'checklists': requirements})
+
+        #if staff, redirect to staff program page
+        else:
+            return HttpResponseRedirect('/program/')
+
+@csrf_protect
 def search(request):
     if request.method == 'POST':
         form = ProgramSearchForm(request.POST)
@@ -192,14 +192,38 @@ def search(request):
 
     return render(request, 'search.html', {'form': form})
 
-
+@csrf_protect
 def program(request):
+    user = request.user
+    if not user.is_anonymous:
+        try:
+            if not user.is_authenticated:
+                return HttpResponseRedirect('/index/')
+            elif user.school_id == -1:
+                return HttpResponseRedirect('/index/')
+        except ObjectDoesNotExist:
+            return HttpResponseRedirect('/index/')
+    else:
+        return HttpResponseRedirect('/login/0')
+
+
+
     return render(request, 'program.html')
 
 
 @csrf_protect
 def programDetail(request, program_id):
     if request.method == 'POST':
+        user = request.user
+        if not user.is_anonymous:
+            try:
+                if not user.is_authenticated:
+                    return HttpResponseRedirect('/index/')
+            except ObjectDoesNotExist:
+                return HttpResponseRedirect('/index/')
+        else:
+            return HttpResponseRedirect('/login/0')
+
         # if add to checklist:
         checklist = Checklist.objects.filter(Student_id=request.user, Requirement_id__Program_id__Program_id=program_id)
 
@@ -237,7 +261,7 @@ def createProgram(request):
         except ObjectDoesNotExist:
             return HttpResponseRedirect('/staffCreateAccount/')
     else:
-        return HttpResponseRedirect('/login/')
+        return HttpResponseRedirect('/login/0')
 
     if request.method == 'POST':
         form = ProgramCreateForm(request.POST)
@@ -282,7 +306,7 @@ def createProgram(request):
     form = ProgramCreateForm()
     return render(request, 'createProgram.html', {'form': form})
 
-
+@csrf_protect
 def feedback(request, checklist_id):
     if request.method == 'POST':
         form = FeedbackForm(request.POST)
@@ -302,6 +326,18 @@ def feedback(request, checklist_id):
             feedback.save()
             return HttpResponseRedirect('/checklist/')
     else:
+        user = request.user
+        if not user.is_anonymous:
+            try:
+                if not user.is_authenticated:
+                    return HttpResponseRedirect('/index/')
+                elif user.school_id == 1:
+                    return HttpResponseRedirect('/index/')
+            except ObjectDoesNotExist:
+                return HttpResponseRedirect('/index/')
+        else:
+            return HttpResponseRedirect('/login/0')
+
         previous_feedback = Feedback.objects.filter(Checklist_id_id=checklist_id)
         if len(previous_feedback) is not 0:
             messages.warning(request, 'You already provided feedback for this checklist')

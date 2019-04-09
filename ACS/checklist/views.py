@@ -342,7 +342,7 @@ def createProgram(request):
             form = StaffCreateProgramForm(request.POST)
             if form.is_valid():
                 program = Program(Program_id=program_id, Major=form.cleaned_data['major'],
-                                  Degree=form.cleaned_data['degree_type'], School_id_id=user.school_id)
+                                  Degree=form.cleaned_data['degree_type'], School_id_id=user.school_id, Certified=True)
                 program.save()
 
         last_requirement = Requirement.objects.filter().order_by('Requirement_id').last()
@@ -353,6 +353,8 @@ def createProgram(request):
 
         requirement = Requirement(Requirement_id=req_id, Program_id=program, Created_by=User.objects.get(username=user.username),Term_season=form.cleaned_data['term'], Term_year=form.cleaned_data['year'], Recommendation_letters=form.cleaned_data['references'], Transcript=form.cleaned_data['official_transcript'],
                                   Tests=form.cleaned_data['tests'], Statement_of_purpose=form.cleaned_data['statement_of_purpose'], Personal_statement=form.cleaned_data['personal_statement'])
+        if user.school_id != -1:
+            requirement.Certified = True
         requirement.save()
 
         return HttpResponseRedirect('/checklist/')

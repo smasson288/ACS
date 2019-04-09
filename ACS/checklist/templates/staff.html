@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>ACS - Program Search</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+<nav class="navbar navbar-expand-sm justify-content-between bg-dark navbar-dark sticky-top">
+   <a class="navbar-brand" href="{% url 'checklist:index' %}">
+       {% load static %}
+       <img src="{% static 'logo.png' %}" width="70" height="30" alt="">
+   </a>
+   <ul class="navbar-nav">
+       <li class="nav-item">
+           <a class="nav-link" href="/search/">Search</a>
+       </li>
+       <li class="nav-item">
+           <a class="nav-link" href="#">Sign Out</a>
+       </li>
+   </ul>
+</nav>
+<div class="container">
+    <div class="row">
+        <div class="col-8">
+            <h1 class="display-4">{{ school.School_name }}</h1>
+        </div>
+        <div class="col-4">
+            {{ school.Address_street }}
+            {{ school.Address_city }}
+            {{ school.Address_state }}
+            {{ school.Address_zipcode }}
+            <button onclick="location.href='{% url 'checklist:createProgram' %}'" class="btn btn-outline-dark">create a new program</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-8">
+            <div class="list-group">
+                {% for requirement in Requirements %}
+                    <div class="list-group-item list-group-item-action">
+                        <a href="{% url 'checklist:detail_program' program.Program_id %}">
+                            {{ requirement.Program_id.Degree }}
+                            {{ requirement.Program_id.program.Major }}
+                        </a>
+                        {{ requirement.Term_season }}
+                        {{ requirement.Term_year }}
+                        References: {% if requirement.Recommendation_letters %} ✓ {% else %} x {% endif %}
+                        Transcript: {% if requirement.Transcript %} ✓ {% else %} x {% endif %}
+                        Tests: {% if requirement.Tests %} ✓ {% else %} x {% endif %}
+                        SOP: {% if requirement.Statement_of_purpose %} ✓ {% else %} x {% endif %}
+                        PS: {% if requirement.Personal_statement %} ✓ {% else %} x {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

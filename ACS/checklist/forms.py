@@ -29,6 +29,8 @@ class ProgramCreateForm(forms.Form):
     university_name = forms.CharField(label='University Name', max_length=100)
     degree_type = forms.CharField(label='Degree Type', max_length=100)
     major = forms.CharField(label='Major', max_length=100)
+    term = forms.CharField(label='Term', max_length=100)
+    year = forms.IntegerField(label='Year')
     tests = forms.BooleanField(label='Standardized Test', required=False)
     statement_of_purpose = forms.BooleanField(label='Statement of Purpose', required=False)
     personal_statement = forms.BooleanField(label='Personal Statement', required=False)

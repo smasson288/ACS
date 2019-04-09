@@ -42,7 +42,7 @@
             <div class="list-group">
                 {% for requirement in Requirements %}
                     <div class="list-group-item list-group-item-action">
-                        <a href="{% url 'checklist:detail_program' program.Program_id %}">
+                        <a href="{% url 'checklist:detail_program' requirement.Program_id.Program_id %}">
                             {{ requirement.Program_id.Degree }}
                             {{ requirement.Program_id.Major }}
                         </a>

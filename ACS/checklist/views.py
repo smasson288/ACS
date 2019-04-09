@@ -250,11 +250,16 @@ def programDetail(request, program_id):
         return HttpResponseRedirect('/checklist/')
 
     currentProgram = get_object_or_404(Program, pk=program_id)
-    requirements = Requirement.objects.filter(Program_id=program_id)
-
     feedbacks = Feedback.objects.filter(Checklist_id__Requirement_id__Program_id=program_id)
 
-    context = {'program': currentProgram, 'requirements': requirements, 'university_name':currentProgram.School_id.School_name, 'feedbacks': feedbacks}
+    try:
+        certified = Requirement.objects.get(Certified=True)
+    except ObjectDoesNotExist:
+        certified = None
+    latest = Requirement.objects.filter(Program_id=currentProgram).latest('Requirement_id')
+
+    context = {'program': currentProgram, 'certified': certified,'latest': latest,
+               'form': RequirementCreateForm(),'university_name':currentProgram.School_id.School_name, 'feedbacks': feedbacks}
 
     return render(request, 'programDetail.html', context)
 

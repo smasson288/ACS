@@ -56,15 +56,23 @@
             </div>
             <div class="col-6">
                 <h1 class="display-4" style="font-size: 4vw">Requirements</h1>
-                {% for requirement in requirements %}
+                {% if certified %}
                     <ul class="list-group">
-                        <li class="list-group-item {% if not requirement.Recommendation_letters %} disabled {% endif %}">Letter of Recommendation: {% if requirement.Recommendation_letters %} Required {% else %} Not Required {% endif %}</li>
-                        <li class="list-group-item {% if not requirement.Transcript %} disabled {% endif %}">Transcript: {% if requirement.Transcript %} Required {% else %} Not Required {% endif %}</li>
-                        <li class="list-group-item {% if not requirement.Tests %} disabled {% endif %}">Tests: {% if requirement.Tests %} Required {% else %} Not Required {% endif %}</li>
-                        <li class="list-group-item {% if not requirement.Statement_of_purpose %} disabled {% endif %}">Statement of Purpose: {% if requirement.Statement_of_purpose %} Required {% else %} Not Required {% endif %}</li>
-                        <li class="list-group-item {% if not requirement.Personal_statement %} disabled {% endif %}">Personal Statement: {% if requirement.Personal_statement %} Required {% else %} Not Required {% endif %}</li>
+                        <li class="list-group-item {% if not certified.Recommendation_letters %} disabled {% endif %}">Letter of Recommendation: {% if certified.Recommendation_letters %} Required {% else %} Not Required {% endif %}</li>
+                        <li class="list-group-item {% if not certified.Transcript %} disabled {% endif %}">Transcript: {% if certified.Transcript %} Required {% else %} Not Required {% endif %}</li>
+                        <li class="list-group-item {% if not certified.Tests %} disabled {% endif %}">Tests: {% if certified.Tests %} Required {% else %} Not Required {% endif %}</li>
+                        <li class="list-group-item {% if not certified.Statement_of_purpose %} disabled {% endif %}">Statement of Purpose: {% if certified.Statement_of_purpose %} Required {% else %} Not Required {% endif %}</li>
+                        <li class="list-group-item {% if not certified.Personal_statement %} disabled {% endif %}">Personal Statement: {% if certified.Personal_statement %} Required {% else %} Not Required {% endif %}</li>
                     </ul>
-                {% endfor %}
+                {% else %}
+                        <ul class="list-group">
+                            <li class="list-group-item {% if not latest.Recommendation_letters %} disabled {% endif %}">Letter of Recommendation: {% if latest.Recommendation_letters %} Required {% else %} Not Required {% endif %}</li>
+                            <li class="list-group-item {% if not latest.Transcript %} disabled {% endif %}">Transcript: {% if latest.Transcript %} Required {% else %} Not Required {% endif %}</li>
+                            <li class="list-group-item {% if not latest.Tests %} disabled {% endif %}">Tests: {% if latest.Tests %} Required {% else %} Not Required {% endif %}</li>
+                            <li class="list-group-item {% if not latest.Statement_of_purpose %} disabled {% endif %}">Statement of Purpose: {% if latest.Statement_of_purpose %} Required {% else %} Not Required {% endif %}</li>
+                            <li class="list-group-item {% if not latest.Personal_statement %} disabled {% endif %}">Personal Statement: {% if latest.Personal_statement %} Required {% else %} Not Required {% endif %}</li>
+                        </ul>
+                {% endif %}
             </div>
         </div>
         <br/>

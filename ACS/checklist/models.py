@@ -68,6 +68,8 @@ class Program(models.Model):
 class Requirement(models.Model):
     Requirement_id = models.IntegerField(primary_key=True, auto_created=True)
     Program_id = models.ForeignKey(Program, on_delete=models.CASCADE)
+    Created_by = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    Certified = models.BooleanField(default=False)
     Term_season = models.CharField(max_length=6)
     Term_year = models.IntegerField()
     Recommendation_letters = models.BooleanField(default=False)
@@ -78,8 +80,7 @@ class Requirement(models.Model):
 
 class Checklist(models.Model):
     Checklist_id = models.IntegerField(primary_key=True, auto_created=True)
-    Requirement_id = models.ForeignKey(Requirement, on_delete=models.CASCADE)
-#    Student_id = models.ForeignKey(Student, on_delete=models.CASCADE)
+    Requirement_id = models.ForeignKey(Requirement, on_delete=models.DO_NOTHING)
     Student_id = models.ForeignKey(User, on_delete=models.CASCADE)
     Term_season = models.CharField(max_length=6)
     Term_Year = models.IntegerField()

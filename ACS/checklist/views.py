@@ -43,7 +43,12 @@ def accLogin(request):
             if user is not None:
                 login(request,user)
 
-            return HttpResponseRedirect('/checklist/')
+            username = request.user.username
+            user_model = get_object_or_404(User, pk=username)
+            if user_model.school_id == -1:
+                return HttpResponseRedirect('/checklist/')
+            else:
+                return HttpResponseRedirect('/program/')
     else:
         form = SignInForm()
     return render(request, 'login.html', {'form': form})
@@ -146,14 +151,21 @@ def checklist(request):
             username = request.user.username
             #user_model = get_object_or_404(Student, pk=username)
             user_model = get_object_or_404(User, pk=username)
-            checklists = Checklist.objects.filter(Student_id=username)
-            requirements = []
 
-            # requirements = list, requirement_id, program_id
-            for list in checklists:
-                requirements.append([list, Requirement.objects.get(Requirement_id=list.Requirement_id.Requirement_id), list.Requirement_id.Program_id])
+            #if staff, redirect to login page
+            if user_model.school_id == -1:
+                checklists = Checklist.objects.filter(Student_id=username)
+                requirements = []
 
-            return render(request, 'checklist.html', {'user': user_model, 'checklists': requirements})
+                # requirements = list, requirement_id, program_id
+                for list in checklists:
+                    requirements.append([list, Requirement.objects.get(Requirement_id=list.Requirement_id.Requirement_id), list.Requirement_id.Program_id])
+
+                return render(request, 'checklist.html', {'user': user_model, 'checklists': requirements})
+
+            #if staff, redirect to login
+            else:
+                return HttpResponseRedirect('/program/')
         else:
             return HttpResponseRedirect('/login/')
 

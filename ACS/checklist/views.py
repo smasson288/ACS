@@ -178,6 +178,10 @@ def search(request):
             degree = form.cleaned_data['degree_type']
             major = form.cleaned_data['major']
 
+            if not university and not degree and not major:
+                messages.warning(request, 'Please fill in the search fields')
+                return render(request, 'search.html', {'form': form})
+
             programs = Program.objects.filter(Degree__contains=degree, Major__contains=major, School_id__School_name__contains=university).all()
             if len(programs) == 0:
                 messages.warning(request, 'there is no results based on your criteria')

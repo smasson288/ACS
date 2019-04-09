@@ -20,9 +20,9 @@ class InstitutionSignUpForm(forms.Form):
 
 
 class ProgramSearchForm(forms.Form):
-    university_name = forms.CharField(label='University Name', max_length=100)
-    degree_type = forms.CharField(label='Degree Type', max_length=100)
-    major = forms.CharField(label='Major', max_length=100)
+    university_name = forms.CharField(label='University Name', max_length=100, required=False)
+    degree_type = forms.CharField(label='Degree Type', max_length=100, required=False)
+    major = forms.CharField(label='Major', max_length=100, required=False)
 
 
 class ProgramCreateForm(forms.Form):

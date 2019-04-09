@@ -30,7 +30,7 @@
             <div class="col-6">
                 <h1 class="display-2" style="font-size: 6vw">{{ university_name }}</h1>
                 <h1 class="display-4" style="font-size: 4vw">{{ program.College }}</h1>
-                <h1 class="display-4" style="font-size: 4vw">{{ program.Degree }} {{ program.Major }}</h1><br/>
+                <h1 class="display-4" style="font-size: 4vw">{{ program.Degree }} {{ program.Major }} {% if program.Certified %} CC {% endif %}</h1><br/>
                 <div class="dropright">
                     <button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                         create a new requirement

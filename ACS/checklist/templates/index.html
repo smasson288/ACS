@@ -27,6 +27,7 @@
                     <div class="lead" style="color: azure">Application Checklist and Statistics</div><br/><br/>
                     {% if anonymous == False %}
                         <button onclick="location.href='{% url 'checklist:checklist' %}'" type="button" class="btn btn-light">{{ user.username }}</button>
+                        <button onclick="location.href='{% url 'checklist:login' 1 %}'" type="button" class="btn btn-light">Logout</button>
                     {% else %}
                         <button onclick="location.href='{% url 'checklist:login' 0 %}'" type="button" class="btn btn-light">Login</button>
                         <button onclick="location.href='{% url 'checklist:studentCreateAccount' %}'" type="button" class="btn btn-light">Student Signup</button><br/><br/>

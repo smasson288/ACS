@@ -59,11 +59,15 @@ class Staff(Student):
 
     REQUIRED_FIELDS = ['password', 'School_id']
 '''
+
+
 class Program(models.Model):
     Program_id = models.IntegerField(primary_key=True, auto_created=True)
     Major = models.CharField(max_length=100)
     Degree = models.CharField(max_length=100)
     School_id = models.ForeignKey(School, on_delete=models.CASCADE)
+    Certified = models.BooleanField(default=False)
+
 
 class Requirement(models.Model):
     Requirement_id = models.IntegerField(primary_key=True, auto_created=True)
@@ -77,6 +81,7 @@ class Requirement(models.Model):
     Tests = models.BooleanField(default=False)
     Statement_of_purpose = models.BooleanField(default=False)
     Personal_statement = models.BooleanField(default=False)
+
 
 class Checklist(models.Model):
     Checklist_id = models.IntegerField(primary_key=True, auto_created=True)

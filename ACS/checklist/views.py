@@ -269,18 +269,32 @@ def programDetail(request, program_id):
 
         # if add to checklist:
         checklist = Checklist.objects.filter(Student_id=request.user, Requirement_id__Program_id__Program_id=program_id)
-
         if len(checklist) is 0:
             last_checklist = Checklist.objects.filter().last()
             if last_checklist is None:
                 checklist_id = 0
             else:
                 checklist_id = last_checklist.Checklist_id + 1
+            form = RequirementCreateForm(request.POST)
+            if form.is_valid():
+                last_requirement = Requirement.objects.filter().order_by('Requirement_id').last()
+                if last_requirement is not None:
+                    req_id = last_requirement.Requirement_id + 1
+                else:
+                    req_id = 0
 
-            requirement = Requirement.objects.filter(Program_id=program_id).last()
-            checklist = Checklist(checklist_id, requirement.Requirement_id, request.user, requirement.Term_season,
+                requirement = Requirement(Requirement_id=req_id, Program_id=Program.objects.get(Program_id=program_id),
+                                          Created_by=User.objects.get(username=user.username),
+                                          Term_season=form.cleaned_data['term'], Term_year=form.cleaned_data['year'],
+                                          Recommendation_letters=form.cleaned_data['references'],
+                                          Transcript=form.cleaned_data['official_transcript'],
+                                          Tests=form.cleaned_data['tests'],
+                                          Statement_of_purpose=form.cleaned_data['statement_of_purpose'],
+                                          Personal_statement=form.cleaned_data['personal_statement'])
+                requirement.save()
+                checklist = Checklist(checklist_id, requirement.Requirement_id, request.user, requirement.Term_season,
                                   requirement.Term_year, False, False, False, False, False)
-            checklist.save()
+                checklist.save()
 
         return HttpResponseRedirect('/checklist/')
 
@@ -294,7 +308,7 @@ def programDetail(request, program_id):
     latest = Requirement.objects.filter(Program_id=currentProgram).latest('Requirement_id')
 
     context = {'program': currentProgram, 'certified': certified,'latest': latest,
-               'form': RequirementCreateForm(), 'filter_form': StatisticFilterForm(), 'university':currentProgram.School_id, 'feedbacks': feedbacks}
+               'form': RequirementCreateForm(),'filter_form': StatisticFilterForm(),'university':currentProgram.School_id, 'feedbacks': feedbacks}
 
     return render(request, 'programDetail.html', context)
 
@@ -340,7 +354,6 @@ def createProgram(request):
 
                 major = form.cleaned_data['major']
                 degree = form.cleaned_data['degree_type']
-
 
                 try:
                     existing_program = Program.objects.get(Major=major, Degree=degree, School_id_id=school_id)

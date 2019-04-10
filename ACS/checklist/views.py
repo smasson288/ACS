@@ -312,12 +312,14 @@ def createProgram(request):
         return HttpResponseRedirect('/login/0')
 
     if request.method == 'POST':
+
         last_program = Program.objects.filter().order_by('Program_id').last()
         if last_program is None:
             program_id = 0
         else:
             program_id = last_program.Program_id + 1
 
+        # if the program is created by students
         if user.school_id == -1:
             form = ProgramCreateForm(request.POST)
             if form.is_valid():
@@ -336,14 +338,32 @@ def createProgram(request):
                     school = School(School_id=school_id, School_name=university_name)
                     school.save()
 
-                program = Program(Program_id=program_id, Major=form.cleaned_data['major'], Degree=form.cleaned_data['degree_type'], School_id_id=school_id)
-                program.save()
+                major = form.cleaned_data['major']
+                degree = form.cleaned_data['degree_type']
+
+
+                try:
+                    existing_program = Program.objects.get(Major=major, Degree=degree, School_id_id=school_id)
+                    program = existing_program
+                except ObjectDoesNotExist:
+                    program = Program(Program_id=program_id, Major=major, Degree=degree, School_id_id=school_id)
+
+        # if the program is created by staff
         else:
             form = StaffCreateProgramForm(request.POST)
             if form.is_valid():
-                program = Program(Program_id=program_id, Major=form.cleaned_data['major'],
-                                  Degree=form.cleaned_data['degree_type'], School_id_id=user.school_id, Certified=True)
-                program.save()
+                major = form.cleaned_data['major']
+                degree = form.cleaned_data['degree_type']
+
+                try:
+                    existing_program = Program.objects.get(Major=major, Degree=degree, School_id_id=user.school_id)
+                    program = existing_program
+                    program.Certified = True
+                except ObjectDoesNotExist:
+                    program = Program(Program_id=program_id, Major=major, Degree=degree, School_id_id=user.school_id,
+                                      Certified=True)
+
+        program.save()
 
         last_requirement = Requirement.objects.filter().order_by('Requirement_id').last()
         if last_requirement is not None:

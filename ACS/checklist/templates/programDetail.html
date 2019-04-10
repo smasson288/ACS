@@ -11,6 +11,7 @@
     <script type="text/javascript">
         $(document).ready(function(){
             $('input').addClass('form-control');
+            $('select').addClass('form-control');
         })
     </script>
 </head>
@@ -70,7 +71,7 @@
                     <div class="card">
                         <div class="card-header" id="headingOne">
                             <h5 class="mb-0">
-                                <button class="btn btn-sm btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                <button class="btn btn-sm text-dark btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                                     Latest Certified Requirement
                                 </button>
                             </h5>
@@ -85,7 +86,7 @@
                                     <li class="list-group-item {% if not certified.Statement_of_purpose %} disabled {% endif %}">Statement of Purpose: {% if certified.Statement_of_purpose %} Required {% else %} Not Required {% endif %}</li>
                                     <li class="list-group-item {% if not certified.Personal_statement %} disabled {% endif %}">Personal Statement: {% if certified.Personal_statement %} Required {% else %} Not Required {% endif %}</li>
                                 </ul>
-                                <a class="btn btn-secondary" href="{% url 'checklist:addToChecklist' certified.Requirement_id %}" role="button">add this requirement to checklist</a>
+                                <a class="btn btn-secondary" style="width: 100%" href="{% url 'checklist:addToChecklist' certified.Requirement_id %}" role="button">add this requirement to checklist</a>
                             </div>
                         </div>
                     </div>
@@ -94,7 +95,7 @@
                     <div class="card">
                         <div class="card-header" id="headingTwo">
                             <h5 class="mb-0">
-                                <button class="btn btn-sm btn-link" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                                <button class="btn btn-sm text-dark btn-link" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
                                     Latest Requirement
                                 </button>
                             </h5>
@@ -109,7 +110,7 @@
                                     <li class="list-group-item {% if not latest.Statement_of_purpose %} disabled {% endif %}">Statement of Purpose: {% if latest.Statement_of_purpose %} Required {% else %} Not Required {% endif %}</li>
                                     <li class="list-group-item {% if not latest.Personal_statement %} disabled {% endif %}">Personal Statement: {% if latest.Personal_statement %} Required {% else %} Not Required {% endif %}</li>
                                 </ul>
-                                <a class="btn btn-secondary" href="{% url 'checklist:addToChecklist' latest.Requirement_id %}" role="button">add this requirement to checklist</a>
+                                <a class="btn btn-secondary" style="width: 100%" href="{% url 'checklist:addToChecklist' latest.Requirement_id %}" role="button">add this requirement to checklist</a>
                             </div>
                         </div>
                     </div>
@@ -121,7 +122,38 @@
         <div class="row">
             <div class="col">
                 <br/>
-                <h1 class="display-2"style="font-size: 5vw">Past Admission Statistics</h1>
+                <div class="row">
+                <div class="col-8">
+                    <h1 class="display-2"style="font-size: 4vw">Past Admission Statistics</h1>
+                </div>
+                <div class="col-4">
+                <div class="dropleft float-right">
+                    <br/>
+                    <button type="button" class="btn btn-sm btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        filter results
+                    </button>
+                    <div class="dropdown-menu">
+                        <form method="post" class="px-3">
+                            {% csrf_token %}
+                            {{ filter_form.non_field_errors }}
+                            {% for hidden_field in filter_form.hidden_fields %}
+                                {{ hidden_field.errors }}
+                                {{ hidden_field }}
+                            {% endfor %}
+                            {% for field in filter_form.visible_fields %}
+                                <div class="form-group">
+                                <label>{{ field.label_tag }}</label>
+                                {{ field.errors }}
+                                {{ field }}
+                                {{ field.help_text }}
+                                </div>
+                            {% endfor %}
+                            <input type="submit" class="btn btn-outline-secondary" value="apply">
+                        </form>
+                    </div>
+                </div>
+                </div>
+                </div>
                 {% for feedback in feedbacks %}
                     <table class="table table-sm table-striped">
                         <thead>

@@ -63,6 +63,7 @@ class RequirementCreateForm(forms.Form):
     references = forms.BooleanField(label='References', required=False)
     official_transcript = forms.BooleanField(label='Official Transcript', required=False)
 
+
 class FeedbackForm(forms.Form):
     school_name = forms.CharField(label='Former Institution Name', max_length=100)
     gpa = forms.FloatField(label='GPA')
@@ -76,6 +77,16 @@ class FeedbackForm(forms.Form):
                                                                         ("WAITLISTED", "Waitlisted"),
                                                                         ("DENIED", 'Denied')
                                                                         ))
+
+
+class StatisticFilterForm(forms.Form):
+    term = forms.CharField(label='Term', max_length=100)
+    year = forms.IntegerField(label='Year')
+    admission_result = forms.ChoiceField(label='Admission Result', choices=(
+        ("ACCEPTED", "Accepted"),
+        ("WAITLISTED", "Waitlisted"),
+        ("DENIED", 'Denied')
+    ))
 
 
 class ChecklistForm(forms.Form):

@@ -294,7 +294,7 @@ def programDetail(request, program_id):
     latest = Requirement.objects.filter(Program_id=currentProgram).latest('Requirement_id')
 
     context = {'program': currentProgram, 'certified': certified,'latest': latest,
-               'form': RequirementCreateForm(),'university':currentProgram.School_id, 'feedbacks': feedbacks}
+               'form': RequirementCreateForm(), 'filter_form': StatisticFilterForm(), 'university':currentProgram.School_id, 'feedbacks': feedbacks}
 
     return render(request, 'programDetail.html', context)
 

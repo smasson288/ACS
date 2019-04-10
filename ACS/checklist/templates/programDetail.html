@@ -43,7 +43,7 @@
                         create a new requirement
                     </button>
                     <div class="dropdown-menu">
-                        <form method="post" class="px-3">
+                        <form method="post" action="/program/{{ program.Program_id }}" class="px-3">
                             {% csrf_token %}
                             {{ form.non_field_errors }}
                             {% for hidden_field in form.hidden_fields %}
@@ -133,7 +133,7 @@
                         filter results
                     </button>
                     <div class="dropdown-menu">
-                        <form method="post" class="px-3">
+                        <form method="post" action="/programFilter/{{ program.Program_id }}" class="px-3">
                             {% csrf_token %}
                             {{ filter_form.non_field_errors }}
                             {% for hidden_field in filter_form.hidden_fields %}

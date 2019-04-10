@@ -253,6 +253,39 @@ def staff(request):
 
 
 @csrf_protect
+def programDetailFilter(request, program_id):
+    if request.method == 'POST':
+        form = StatisticFilterForm(request.POST)
+
+        if form.is_valid():
+            currentProgram = get_object_or_404(Program, pk=program_id)
+
+            if form.cleaned_data['year'] is not None:
+                feedbacks = Feedback.objects.filter(Checklist_id__Requirement_id__Program_id=program_id,
+                                                    Feedback_status=form.cleaned_data['admission_result'],
+                                                    Checklist_id__Term_season__contains=form.cleaned_data['term'],
+                                                    Checklist_id__Term_Year__contains=form.cleaned_data['year'])
+            else:
+                feedbacks = Feedback.objects.filter(Checklist_id__Requirement_id__Program_id=program_id,
+                                                    Feedback_status=form.cleaned_data['admission_result'],
+                                                    Checklist_id__Term_season__contains=form.cleaned_data['term'])
+
+            try:
+                certified = Requirement.objects.get(Certified=True)
+            except ObjectDoesNotExist:
+                certified = None
+            latest = Requirement.objects.filter(Program_id=currentProgram).latest('Requirement_id')
+
+            context = {'program': currentProgram, 'certified': certified, 'latest': latest,
+                       'form': RequirementCreateForm(), 'filter_form': StatisticFilterForm(),
+                       'university': currentProgram.School_id, 'feedbacks': feedbacks}
+
+            return render(request, 'programDetail.html', context)
+
+    return HttpResponseRedirect('/program/' + str(program_id))
+
+
+@csrf_protect
 def programDetail(request, program_id):
     if request.method == 'POST':
         user = request.user

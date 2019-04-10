@@ -80,8 +80,8 @@ class FeedbackForm(forms.Form):
 
 
 class StatisticFilterForm(forms.Form):
-    term = forms.CharField(label='Term', max_length=100)
-    year = forms.IntegerField(label='Year')
+    term = forms.CharField(label='Term', max_length=100, required=False)
+    year = forms.IntegerField(label='Year', required=False)
     admission_result = forms.ChoiceField(label='Admission Result', choices=(
         ("ACCEPTED", "Accepted"),
         ("WAITLISTED", "Waitlisted"),

@@ -252,6 +252,25 @@ def staff(request):
     return render(request, 'staff.html', {'school': School.objects.get(School_id=user.school_id), 'Requirements': requirements})
 
 
+def deleteChecklist(request, checklist_id):
+    user = request.user
+    if not user.is_anonymous:
+        try:
+            if not user.is_authenticated:
+                return HttpResponseRedirect('/')
+            elif user.school_id != -1:
+                return HttpResponseRedirect('/staff/')
+        except ObjectDoesNotExist:
+            return HttpResponseRedirect('/')
+    else:
+        return HttpResponseRedirect('/login/0')
+
+    cl = get_object_or_404(Checklist, pk=checklist_id)
+    if cl.Student_id == user:
+        cl.delete()
+    return HttpResponseRedirect('/checklist/')
+
+
 @csrf_protect
 def programDetailFilter(request, program_id):
     if request.method == 'POST':

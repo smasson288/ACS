@@ -28,10 +28,12 @@
     <br/>
     <h1 class="display-1">{{ user.username }}'s</h1>
     <h1 class="display-4">Checklist</h1>
+    </div>
+    <div class="container">
     {% if checklists %}
         <div class="table-responsive">
         <table class="table table-hover table-condensed">
-        <thead style="text-align: center">
+        <thead style="text-align: center; font-size: 75%">
             <tr>
                 <th>Program / Term</th>
                 <th>References</th>
@@ -41,6 +43,7 @@
                 <th>PS</th>
                 <th>Update</th>
                 <th>Result</th>
+                <th>Delete</th>
             </tr>
         </thead>
         <tbody>
@@ -69,8 +72,9 @@
                 <td>{% if checklist.1.Personal_statement %}
                 <input type="checkbox" name="personal_statement" id="id_personal_statement" {% if checklist.0.Personal_statement %} checked {% endif %}></li>
                 {% endif %}</td>
-                <td><input class="btn btn-sm btn-outline-secondary" type="submit" value="update"></td>
-                <td><input class="btn btn-sm btn-outline-secondary" type="button" onclick="location.href='{% url 'checklist:feedback' checklist.0.Checklist_id %}'" value="submit"></td>
+                <td><input style="font-size: 60%" class="btn btn-sm btn-outline-secondary" type="submit" value="update"></td>
+                <td><input style="font-size: 60%" class="btn btn-sm btn-outline-secondary" type="button" onclick="location.href='{% url 'checklist:feedback' checklist.0.Checklist_id %}'" value="submit"></td>
+                <td><input style="font-size: 60%" class="btn btn-outline-secondary btn-sm" type="button" onclick="location.href='{% url 'checklist:deleteChecklist' checklist.0.Checklist_id %}'" value="delete"></td>
             </tr>
             </form>
             <br/>

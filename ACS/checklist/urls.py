@@ -15,5 +15,6 @@ urlpatterns = [
     path('programFilter/<int:program_id>', views.programDetailFilter, name='programDetailFilter'),
     path('addToChecklist/<int:requirement_id>', views.addToChecklist, name='addToChecklist'),
     path('createProgram/', views.createProgram, name='createProgram'),
-    path('feedback/<int:checklist_id>', views.feedback, name='feedback')
+    path('feedback/<int:checklist_id>', views.feedback, name='feedback'),
+    path('deleteChecklist/<int:checklist_id>', views.deleteChecklist, name='deleteChecklist')
 ]

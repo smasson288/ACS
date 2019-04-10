@@ -8,14 +8,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    <style>
-        .vertical-center {
-            min-height: 90%;
-            min-height: 90vh;
-            display: flex;
-            align-items: center;
-        }
-    </style>
     <script type="text/javascript">
         $(document).ready(function(){
             $('input').addClass('form-control');
@@ -37,39 +29,33 @@
             </li>
         </ul>
 </nav>
-<div class="vertical-center">
-    <div class="container">
-      <div class="row h-100 justify-content-center align-items-center text-center">
-        <div class="col-6">
-            <form action="/staffCreateAccount/" method="post">
-                {% csrf_token %}
-                {{ form.non_field_errors }}
-                {% for hidden_field in form.hidden_fields %}
-                    {{ hidden_field.errors }}
-                    {{ hidden_field }}
+<div class="container">
+    <br/><br/>
+    <div class="row justify-content-center align-items-center text-center"> <div class="col-6">
+        <form action="/staffCreateAccount/" method="post">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            {% for hidden_field in form.hidden_fields %}
+                {{ hidden_field.errors }}
+                {{ hidden_field }}
+            {% endfor %}
+            {% for field in form.visible_fields %}
+                <div class="form-group">    <label>{{ field.label_tag }}</label>    {{ field.errors }}  {{ field }} {{ field.help_text }}
+                </div>
+            {% endfor %}
+            <br/>
+            <input type="submit" class="btn btn-dark" value="signup">
+        </form>
+        {% if messages %}
+            <br/>
+            <h5>
+                {% for message in messages %}
+                    {{ message }}
                 {% endfor %}
-                {% for field in form.visible_fields %}
-                    <div class="form-group">
-                    <label>{{ field.label_tag }}</label>
-                    {{ field.errors }}
-                    {{ field }}
-                    {{ field.help_text }}
-                    </div>
-                {% endfor %}
-                <br/>
-                <input type="submit" class="btn btn-dark" value="signup">
-            </form>
-            {% if messages %}
-                <br/>
-                <h5>
-                    {% for message in messages %}
-                        {{ message }}
-                    {% endfor %}
-                </h5>
-            {% endif %}
-            <div style="height: 50px"></div>
-        </div>
-      </div>
+            </h5>
+        {% endif %}
+        <div style="height: 50px"></div>
+    </div>
     </div>
 </div>
 </body>

@@ -8,6 +8,11 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('input').addClass('form-control');
+        })
+    </script>
 </head>
 <body>
 <nav class="navbar navbar-expand-sm justify-content-between bg-dark navbar-dark sticky-top">
@@ -28,49 +33,49 @@
         <br/>
         <div class="row">
             <div class="col-6">
-                <h1 class="display-3" style="font-size: 6vw">{{ university.School_name }}</h1>
-                <h1 class="display-3" style="font-size: 3vw">{{ university.Address_street }}</h1>
-                <h1 class="display-3" style="font-size: 3vw">{{ university.Address_city }} {{ university.Address_state }}</h1>
-                <h1 class="display-3" style="font-size: 3vw">{{ university.Address_zipcode }}</h1>
-                <h1 class="display-4" style="font-size: 4vw">{{ program.Degree }} {{ program.Major }} {% if program.Certified %} CC {% endif %}</h1><br/>
+                <h1 class="display-3" style="font-size: 3vw">{{ university.School_name }}</h1>
+                <h1 class="display-3" style="font-size: 2vw">{{ university.Address_street }}</h1>
+                <h1 class="display-3" style="font-size: 2vw">{{ university.Address_city }} {{ university.Address_state }}</h1>
+                <h1 class="display-3" style="font-size: 2vw">{{ university.Address_zipcode }}</h1><br/>
                 <div class="dropright">
-                    <button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    <button type="button" class="btn btn-sm btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                         create a new requirement
                     </button>
-                <div class="dropdown-menu">
-                    <form method="post" class="px-3">
-                        {% csrf_token %}
-                        {{ form.non_field_errors }}
-                        {% for hidden_field in form.hidden_fields %}
-                            {{ hidden_field.errors }}
-                            {{ hidden_field }}
-                        {% endfor %}
-                        {% for field in form.visible_fields %}
-                            <div class="form-group">
-                            <label>{{ field.label_tag }}</label>
-                            {{ field.errors }}
-                            {{ field }}
-                            {{ field.help_text }}
-                            </div>
-                        {% endfor %}
-                        <input type="submit" class="btn btn-outline-secondary" value="create and add to checklist">
-                    </form>
-                </div>
+                    <div class="dropdown-menu">
+                        <form method="post" class="px-3">
+                            {% csrf_token %}
+                            {{ form.non_field_errors }}
+                            {% for hidden_field in form.hidden_fields %}
+                                {{ hidden_field.errors }}
+                                {{ hidden_field }}
+                            {% endfor %}
+                            {% for field in form.visible_fields %}
+                                <div class="form-group">
+                                <label>{{ field.label_tag }}</label>
+                                {{ field.errors }}
+                                {{ field }}
+                                {{ field.help_text }}
+                                </div>
+                            {% endfor %}
+                            <input type="submit" class="btn btn-outline-secondary" value="create and add to checklist">
+                        </form>
+                    </div>
                 </div>
             </div>
             <div class="col-6">
-                <h1 class="display-4" style="font-size: 4vw">Requirements</h1>
+                <h1 class="display-4" style="font-size: 3vw">{{ program.Degree }} {{ program.Major }} {% if program.Certified %} (Certified) {% endif %}</h1>
+                <h1 class="display-4" style="font-size: 3vw">Requirements</h1>
                 <div id="accordion">
                 {% if certified %}
                     <div class="card">
                         <div class="card-header" id="headingOne">
                             <h5 class="mb-0">
-                                <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                <button class="btn btn-sm btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                                     Latest Certified Requirement
                                 </button>
                             </h5>
                         </div>
-                        <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+                        <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
                             <div class="card-body">
                                 <ul class="list-group">
                                     <li class="list-group-item">{{ certified.Term_season }} {{ certified.Term_year }}</li>
@@ -87,14 +92,14 @@
                 {% endif %}
                 {% if latest %}
                     <div class="card">
-                        <div class="card-header" id="headingOne">
+                        <div class="card-header" id="headingTwo">
                             <h5 class="mb-0">
-                                <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                <button class="btn btn-sm btn-link" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
                                     Latest Requirement
                                 </button>
                             </h5>
                         </div>
-                        <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+                        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
                             <div class="card-body">
                                 <ul class="list-group">
                                     <li class="list-group-item">{{ latest.Term_season }} {{ latest.Term_year }}</li>
@@ -109,12 +114,14 @@
                         </div>
                     </div>
                 {% endif %}
+                </div>
             </div>
         </div>
         <br/>
         <div class="row">
             <div class="col">
-                <h1 class="display-2"style="font-size: 6vw">Feedback</h1>
+                <br/>
+                <h1 class="display-2"style="font-size: 5vw">Past Admission Statistics</h1>
                 {% for feedback in feedbacks %}
                     <table class="table table-sm table-striped">
                         <thead>

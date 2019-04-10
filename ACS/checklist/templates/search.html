@@ -55,15 +55,15 @@
     {% if programs %}
         <br/><br/>
         <div class="row">
-            <div class="col-6">
+            <div class="col-10">
                 <div class="list-group">
                     {% for program in programs %}
                         <a href="{% url 'checklist:detail_program' program.Program_id %}" class="list-group-item list-group-item-action">
                             {{ program.School_id.School_name }}
                             {{ program.Degree }}
                             {{ program.Major }}
+                            {% if program.Certified %} (Certified) {% endif %}
                         </a>
-                        {% if program.Certified %} CC {% endif %}
                     {% endfor %}
                 </div>
             </div>

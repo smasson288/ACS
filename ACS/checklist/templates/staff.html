@@ -26,19 +26,22 @@
 </nav>
 <div class="container">
     <div class="row">
-        <div class="col-8">
-            <h1 class="display-4">{{ school.School_name }}</h1>
+        <div class="col-6">
+            <br/>
+            <h1 class="display-3" style="font-size: 3vw">{{ school.School_name }}</h1>
+            <h1 class="display-3" style="font-size: 2vw">{{ school.Address_street }}</h1>
+            <h1 class="display-3" style="font-size: 2vw">{{ school.Address_city }} {{ school.Address_state }}</h1>
+            <h1 class="display-3" style="font-size: 2vw">{{ school.Address_zipcode }}</h1>
         </div>
-        <div class="col-4">
-            {{ school.Address_street }}
-            {{ school.Address_city }}
-            {{ school.Address_state }}
-            {{ school.Address_zipcode }}
-            <button onclick="location.href='{% url 'checklist:createProgram' %}'" class="btn btn-outline-dark">create a new program</button>
+        <div class="col-6">
+            <br/><br/><br/>
+            <button onclick="location.href='{% url 'checklist:createProgram' %}'" class="btn btn-outline-dark float-right">create a new program</button>
         </div>
     </div>
     <div class="row">
-        <div class="col-8">
+        <div class="col-12">
+            <br/><br/>
+            <p>Published Programs and Requirements:</p>
             <div class="list-group">
                 {% for requirement in Requirements %}
                     <div class="list-group-item list-group-item-action">
@@ -46,13 +49,13 @@
                             {{ requirement.Program_id.Degree }}
                             {{ requirement.Program_id.Major }}
                         </a>
-                        {{ requirement.Term_season }}
+                        | {{ requirement.Term_season }}
                         {{ requirement.Term_year }}
-                        References: {% if requirement.Recommendation_letters %} ✓ {% else %} x {% endif %}
-                        Transcript: {% if requirement.Transcript %} ✓ {% else %} x {% endif %}
-                        Tests: {% if requirement.Tests %} ✓ {% else %} x {% endif %}
-                        SOP: {% if requirement.Statement_of_purpose %} ✓ {% else %} x {% endif %}
-                        PS: {% if requirement.Personal_statement %} ✓ {% else %} x {% endif %}
+                        | References: {% if requirement.Recommendation_letters %} ✓ {% else %} x {% endif %}
+                        | Transcript: {% if requirement.Transcript %} ✓ {% else %} x {% endif %}
+                        | Tests: {% if requirement.Tests %} ✓ {% else %} x {% endif %}
+                        | SOP: {% if requirement.Statement_of_purpose %} ✓ {% else %} x {% endif %}
+                        | PS: {% if requirement.Personal_statement %} ✓ {% else %} x {% endif %}
                     </div>
                 {% endfor %}
             </div>

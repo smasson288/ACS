@@ -67,7 +67,7 @@ class RequirementCreateForm(forms.Form):
 class FeedbackForm(forms.Form):
     school_name = forms.CharField(label='Former Institution Name', max_length=100)
     gpa = forms.FloatField(label='GPA')
-    tests = forms.CharField(label='Standardized Test', max_length=100)
+    tests = forms.IntegerField(label='Standardized Test')
     reference = forms.CharField(label='Reference', max_length=100)
     research = forms.CharField(label='Research', max_length=100)
     publication = forms.CharField(label='Publication', max_length=100)

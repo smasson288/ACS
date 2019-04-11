@@ -191,23 +191,24 @@ def checklist(request):
     '''
     if request.method == 'POST':
         form = ChecklistForm(request.POST)
-
         if form.is_valid():
-            checklist = Checklist.objects.get(Checklist_id=form.cleaned_data['checklist_id'])
-            checklist.Tests = form.cleaned_data['tests']
-            checklist.Statement_of_purpose = form.cleaned_data['statement_of_purpose']
-            checklist.Personal_statement = form.cleaned_data['personal_statement']
-            checklist.Recommendation_letters = form.cleaned_data['references']
-            checklist.Transcript = form.cleaned_data['official_transcript']
-            checklist.save()
+            try:
+                checklist = Checklist.objects.get(Checklist_id=form.cleaned_data['checklist_id'])
+                checklist.Tests = form.cleaned_data['tests']
+                checklist.Statement_of_purpose = form.cleaned_data['statement_of_purpose']
+                checklist.Personal_statement = form.cleaned_data['personal_statement']
+                checklist.Recommendation_letters = form.cleaned_data['references']
+                checklist.Transcript = form.cleaned_data['official_transcript']
+                checklist.save()
 
-            checklists = Checklist.objects.filter(Student_id=request.user.username)
-            requirements = []
+                checklists = Checklist.objects.filter(Student_id=request.user.username)
+                requirements = []
 
-            # requirements = list, requirement_id, program_id
-            for list in checklists:
-                requirements.append([list, Requirement.objects.get(Requirement_id=list.Requirement_id.Requirement_id), list.Requirement_id.Program_id])
-
+                # requirements = list, requirement_id, program_id
+                for list in checklists:
+                    requirements.append([list, Requirement.objects.get(Requirement_id=list.Requirement_id.Requirement_id), list.Requirement_id.Program_id])
+            except ObjectDoesNotExist:
+                return HttpResponseRedirect('/')
             return render(request, 'checklist.html', {'user': request.user, 'checklists': requirements})
         return HttpResponseRedirect('/login/0')
     else:
@@ -473,7 +474,8 @@ def createProgram(request):
                     program = existing_program
                 except ObjectDoesNotExist:
                     program = Program(Program_id=program_id, Major=major, Degree=degree, School_id_id=school_id)
-
+            else:
+                return render(request, 'createProgram.html', {'form': ProgramCreateForm()})
         # if the program is created by staff
         else:
             form = StaffCreateProgramForm(request.POST)
@@ -488,7 +490,8 @@ def createProgram(request):
                 except ObjectDoesNotExist:
                     program = Program(Program_id=program_id, Major=major, Degree=degree, School_id_id=user.school_id,
                                       Certified=True)
-
+            else:
+                return render(request, 'createProgram.html', {'form': StaffCreateProgramForm()})
         program.save()
 
         last_requirement = Requirement.objects.filter().order_by('Requirement_id').last()
@@ -522,16 +525,19 @@ def feedback(request, checklist_id):
     :param checklist_id: the id of the checklist from which users are given feedback about
     '''
     if request.method == 'POST':
+        print(request.POST)
         form = FeedbackForm(request.POST)
         # create a new program in db
         if form.is_valid():
-
+            print(form.cleaned_data['admission_result'])
+            print(form.cleaned_data['tests'])
             feedback = Feedback(Checklist_id=Checklist.objects.get(Checklist_id=checklist_id), Feedback_status=form.cleaned_data['admission_result'], Former_school=form.cleaned_data['school_name'], GPA=form.cleaned_data['gpa'],
                                 Standardized_Test=form.cleaned_data['tests'], Recommendation=form.cleaned_data['reference'], Research=form.cleaned_data['research'],
-                                Publication = form.cleaned_data['publication'], Other_comments=form.cleaned_data['other_comment'])
-
+                                Publication=form.cleaned_data['publication'], Other_comments=form.cleaned_data['other_comment'])
             feedback.save()
             return HttpResponseRedirect('/checklist/')
+        else:
+            return render(request, 'feedback.html', {'form': FeedbackForm, 'checklist_id': checklist_id})
     else:
         user = request.user
         if not user.is_anonymous:
@@ -546,8 +552,8 @@ def feedback(request, checklist_id):
             return HttpResponseRedirect('/login/0')
 
         previous_feedback = Feedback.objects.filter(Checklist_id_id=checklist_id)
-        checklist = Checklist.objects.filter(checklist_id=checklist_id)
-        if checklist.Student_id_username != user.username:
+        checklist = Checklist.objects.get(Checklist_id=checklist_id)
+        if checklist.Student_id.username != user.username:
             messages.warning(request, 'You can only provide feedback on your own checklist')
             return HttpResponseRedirect('/checklist/')
         elif len(previous_feedback) is not 0:

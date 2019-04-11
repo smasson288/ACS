@@ -9,6 +9,10 @@ from .models import *
 
 
 def index(request):
+    '''
+    The view responsible for the index AKA the home page.
+    Will check if a user has logged in yet.
+    '''
     user = request.user
     if not user.is_anonymous:
         return render(request, 'index.html', {'anonymous': False,})
@@ -17,6 +21,12 @@ def index(request):
 
 @csrf_protect
 def accLogin(request, logout_request):
+    '''
+    The view responsible for login.
+    If a client successfully enters their username and password, the user will be authorized and login.
+    They will then be redirected to the Checklist/staff homepage depending on which user they are.
+    :param logout_request: 0 if login, 1 if logout
+    '''
     if request.method == 'POST':
         form = SignInForm(request.POST)
         if form.is_valid():
@@ -53,6 +63,11 @@ def accLogin(request, logout_request):
 
 @csrf_protect
 def studentCreateAccount(request):
+    '''
+    The view for creating a student account
+    If form is correctly filled in by the client, then a student User object will be created
+    and the client will be redirected to the login page.
+    '''
     if request.method == 'POST':
         form = StudentSignUpForm(request.POST)
         if form.is_valid():
@@ -82,6 +97,12 @@ def studentCreateAccount(request):
 
 @csrf_protect
 def staffCreateAccount(request):
+    '''
+    The view for creating a staff account
+    If form is correctly filled in by the client, then a staff User object will be created
+    and the client will be redirected to the login page.
+    If the staff enters a school that is not recognized, a new School object is created
+    '''
     if request.method == 'POST':
         form = InstitutionSignUpForm(request.POST)
         if form.is_valid():
@@ -127,6 +148,11 @@ def staffCreateAccount(request):
 
 
 def addToChecklist(request, requirement_id):
+    '''
+    If a student user is logged in, the requirement will be converted into one of the
+    user's checklist items.
+    :param requirement_id: the id of the requirement to be added to the Checklist
+    '''
     user = request.user
     if not user.is_anonymous:
         try:
@@ -158,6 +184,11 @@ def addToChecklist(request, requirement_id):
 
 @csrf_protect
 def checklist(request):
+    '''
+    The view responsible for the checklist page, the main page for student users.
+    The view will list all checklist items associated with the currently logged in student user.
+    If not student, then redirected elsewhere.
+    '''
     if request.method == 'POST':
         form = ChecklistForm(request.POST)
 
@@ -211,6 +242,12 @@ def checklist(request):
 
 @csrf_protect
 def search(request):
+    '''
+    The view responsible for searching for programs.
+    After the client fills in the search form, the view will list all programs
+    that match what was filled in. The programs are clickable and will take client to
+    the specific program page.
+    '''
     if request.method == 'POST':
         form = ProgramSearchForm(request.POST)
         if form.is_valid():
@@ -234,6 +271,10 @@ def search(request):
 
 @csrf_protect
 def staff(request):
+    '''
+    The view responsible for the homepage of staff users.
+    Will show info about the staff's school and the programs offered by the school.
+    '''
     user = request.user
     if not user.is_anonymous:
         try:
@@ -253,6 +294,10 @@ def staff(request):
 
 
 def deleteChecklist(request, checklist_id):
+    '''
+    A view that deletes the checklist item with the given id.
+    :param checklist_id: the id of the checklist object to be deleted
+    '''
     user = request.user
     if not user.is_anonymous:
         try:
@@ -273,6 +318,11 @@ def deleteChecklist(request, checklist_id):
 
 @csrf_protect
 def programDetailFilter(request, program_id):
+    '''
+    A view that filters and cleans up the feedback objects associated
+    with the given program object
+    :param program_id: the id of the program.
+    '''
     if request.method == 'POST':
         form = StatisticFilterForm(request.POST)
 
@@ -306,6 +356,12 @@ def programDetailFilter(request, program_id):
 
 @csrf_protect
 def programDetail(request, program_id):
+    '''
+    The view that provides a detailed version of a program object.
+    If a student user is logged in, they will be able to add it to their
+    personal checklist
+    :param program_id: The id of the program to be looked at
+    '''
     if request.method == 'POST':
         user = request.user
         if not user.is_anonymous:
@@ -367,6 +423,11 @@ def programDetail(request, program_id):
 
 @csrf_protect
 def createProgram(request):
+    '''
+    Allow users to create a Program object if the form is filled
+    in without issues. If the entered school does not exist in the database,
+    a new School object will be created.
+    '''
     user = request.user
     if not user.is_anonymous:
         try:
@@ -453,6 +514,13 @@ def createProgram(request):
 
 @csrf_protect
 def feedback(request, checklist_id):
+    '''
+    This view lets student users create new Feedback objects.
+    Given a checklist, the user will fill out a form and create a new
+    feedback about a program if their are no issues will filling out the form.
+    If a non-student user is logged in, they will be redirected.
+    :param checklist_id: the id of the checklist from which users are given feedback about
+    '''
     if request.method == 'POST':
         form = FeedbackForm(request.POST)
         # create a new program in db

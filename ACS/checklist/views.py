@@ -411,7 +411,7 @@ def programDetail(request, program_id):
     feedbacks = Feedback.objects.filter(Checklist_id__Requirement_id__Program_id=program_id)
 
     try:
-        certified = Requirement.objects.get(Certified=True)
+        certified = Requirement.objects.get(Certified=True, Program_id=currentProgram)
     except ObjectDoesNotExist:
         certified = None
     latest = Requirement.objects.filter(Program_id=currentProgram).latest('Requirement_id')

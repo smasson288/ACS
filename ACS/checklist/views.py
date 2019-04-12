@@ -127,6 +127,7 @@ def staffCreateAccount(request):
                 school.Address_state = form.cleaned_data['address_state']
                 school.Address_street = form.cleaned_data['address_street']
                 school.Address_zipcode = form.cleaned_data['zipcode']
+                school.save()
             except School.DoesNotExist:
                 last_school = School.objects.filter().order_by('School_id').last()
                 if last_school is not None:

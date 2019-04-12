@@ -123,6 +123,10 @@ def staffCreateAccount(request):
             try:
                 school = School.objects.get(School_name=school_name)
                 school_id = school.School_id
+                school.Address_city = form.cleaned_data['address_city']
+                school.Address_state = form.cleaned_data['address_state']
+                school.Address_street = form.cleaned_data['address_street']
+                school.Address_zipcode = form.cleaned_data['zipcode']
             except School.DoesNotExist:
                 last_school = School.objects.filter().order_by('School_id').last()
                 if last_school is not None:
@@ -341,7 +345,8 @@ def programDetailFilter(request, program_id):
                                                     Checklist_id__Term_season__contains=form.cleaned_data['term'])
 
             try:
-                certified = Requirement.objects.get(Certified=True)
+                certified = Requirement.objects.filter(Certified=True, Program_id=currentProgram).latest(
+                    'Requirement_id')
             except ObjectDoesNotExist:
                 certified = None
             latest = Requirement.objects.filter(Program_id=currentProgram).latest('Requirement_id')
@@ -411,7 +416,7 @@ def programDetail(request, program_id):
     feedbacks = Feedback.objects.filter(Checklist_id__Requirement_id__Program_id=program_id)
 
     try:
-        certified = Requirement.objects.get(Certified=True, Program_id=currentProgram)
+        certified = Requirement.objects.filter(Certified=True, Program_id=currentProgram).latest('Requirement_id')
     except ObjectDoesNotExist:
         certified = None
     latest = Requirement.objects.filter(Program_id=currentProgram).latest('Requirement_id')

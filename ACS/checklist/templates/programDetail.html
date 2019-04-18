@@ -53,6 +53,7 @@
                 <h1 class="display-3" style="font-size: 2vw">{{ university.Address_street }}</h1>
                 <h1 class="display-3" style="font-size: 2vw">{{ university.Address_city }} {{ university.Address_state }}</h1>
                 <h1 class="display-3" style="font-size: 2vw">{{ university.Address_zipcode }}</h1><br/>
+                {% if user.is_authenticated and user.school_id == -1 %}
                 <div class="dropright">
                     <button type="button" class="btn btn-sm btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                         create a new requirement
@@ -77,6 +78,7 @@
                         </form>
                     </div>
                 </div>
+                {% endif %}
             </div>
             <div class="col-6">
                 <h1 class="display-4" style="font-size: 3vw">{{ program.Degree }} {{ program.Major }} {% if program.Certified %} (Certified) {% endif %}</h1>
@@ -101,7 +103,9 @@
                                     <li class="list-group-item {% if not certified.Statement_of_purpose %} disabled {% endif %}">Statement of Purpose: {% if certified.Statement_of_purpose %} Required {% else %} Not Required {% endif %}</li>
                                     <li class="list-group-item {% if not certified.Personal_statement %} disabled {% endif %}">Personal Statement: {% if certified.Personal_statement %} Required {% else %} Not Required {% endif %}</li>
                                 </ul>
+                                {% if user.is_authenticated and user.school_id == -1 %}
                                 <a class="btn btn-secondary" style="width: 100%" href="{% url 'checklist:addToChecklist' certified.Requirement_id %}" role="button">add this requirement to checklist</a>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
@@ -125,7 +129,9 @@
                                     <li class="list-group-item {% if not latest.Statement_of_purpose %} disabled {% endif %}">Statement of Purpose: {% if latest.Statement_of_purpose %} Required {% else %} Not Required {% endif %}</li>
                                     <li class="list-group-item {% if not latest.Personal_statement %} disabled {% endif %}">Personal Statement: {% if latest.Personal_statement %} Required {% else %} Not Required {% endif %}</li>
                                 </ul>
+                                {% if user.is_authenticated and user.school_id == -1 %}
                                 <a class="btn btn-secondary" style="width: 100%" href="{% url 'checklist:addToChecklist' latest.Requirement_id %}" role="button">add this requirement to checklist</a>
+                                {% endif %}
                             </div>
                         </div>
                     </div>

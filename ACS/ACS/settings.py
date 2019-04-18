@@ -25,7 +25,8 @@ SECRET_KEY = 'l998=cgoa9ef2o+1xogljqx@s&5$8fs8iz7zfss9oqrp9$tp)v'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['acs-env.9f3vvwhbvh.us-west-2.elasticbeanstalk.com', '127.0.0.1',
+                 'acs.allacs.net', 'allacs.net']
 
 
 # Application definition
@@ -118,10 +119,13 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
-STATICFILES_DIRS = [
+#STATICFILES_DIRS = [
+#    os.path.join(BASE_DIR, 'checklist/static'),
+#]
+
+STATIC_ROOT = [
     os.path.join(BASE_DIR, 'checklist/static'),
 ]
-
 STATIC_URL = '/static/'
 
 #AUTH_USER_MODEL = 'checklist.Student', 'checklist.Staff'
